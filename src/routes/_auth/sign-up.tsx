@@ -44,15 +44,6 @@ function SignUp() {
             />
             <form.AppField
               name="confirmPassword"
-              validators={{
-                onChangeListenTo: ["password"],
-                onChange: ({ value, fieldApi }) => {
-                  if (value !== fieldApi.form.getFieldValue("password")) {
-                    return "Passwords do not match";
-                  }
-                  return undefined;
-                },
-              }}
               children={() => (
                 <TextField type="password">Confirm Password</TextField>
               )}
