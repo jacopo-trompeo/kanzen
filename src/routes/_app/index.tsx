@@ -1,20 +1,13 @@
-import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { getUser } from "@/functions/get-user";
 import { authClient } from "@/lib/auth/client";
 
-export const Route = createFileRoute("/(app)/")({
+export const Route = createFileRoute("/_app/")({
   component: Home,
-  beforeLoad: async () => {
+  loader: async () => {
     const session = await getUser();
     return { session };
-  },
-  loader: async ({ context }) => {
-    if (!context.session) {
-      throw redirect({
-        to: "/auth/sign-in",
-      });
-    }
   },
 });
 
@@ -31,7 +24,7 @@ function Home() {
             fetchOptions: {
               onSuccess: () => {
                 navigate({
-                  to: "/auth/sign-in",
+                  to: "/sign-in",
                 });
               },
             },
