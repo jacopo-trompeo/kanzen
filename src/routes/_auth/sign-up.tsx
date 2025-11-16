@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { TextField } from "@/components/form/text-field";
 import {
   Card,
@@ -50,11 +50,20 @@ function SignUp() {
             />
           </FieldGroup>
 
-          <form.AppForm>
-            <form.SubscribeButton className="mt-5">
-              Sign In
-            </form.SubscribeButton>
-          </form.AppForm>
+          <div className="mt-5 flex flex-col gap-5 text-muted-foreground text-sm">
+            <div>
+              Already have an account?{" "}
+              <Link
+                to="/sign-in"
+                className="text-primary underline-offset-4 hover:underline"
+              >
+                Sign in
+              </Link>
+            </div>
+            <form.AppForm>
+              <form.SubscribeButton>Sign In</form.SubscribeButton>
+            </form.AppForm>
+          </div>
         </form>
       </CardContent>
     </Card>
