@@ -1,11 +1,11 @@
 import { TextField } from "@/components/form/text-field";
 import { withFieldGroup } from "@/hooks/form";
+import type { BaseAuthFields } from "../-shared/types";
 
-export const FieldGroupEmailAndPassword = withFieldGroup({
-  defaultValues: {
-    email: "",
-    password: "",
-  },
+export const FieldGroupEmailAndPassword = withFieldGroup<
+  BaseAuthFields,
+  unknown
+>({
   render: ({ group }) => {
     return (
       <>
