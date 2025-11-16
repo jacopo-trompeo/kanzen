@@ -1,30 +1,20 @@
 import { useNavigate } from "@tanstack/react-router";
-import * as z from "zod";
 import { useAppForm } from "@/hooks/form";
 import { authClient } from "@/lib/auth/client";
+import { signUpSchema, VALIDATOR_DEBOUNCE_MS } from "../-shared/validation";
+import type { SignUpFields } from "../-utils/types";
 
-const signUpSchema = z
-  .object({
-    email: z.email("Please enter a valid email address."),
-    password: z.string().min(8, "Password must be at least 8 characters long."),
-    confirmPassword: z
-      .string()
-      .min(8, "Password must be at least 8 characters long."),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords do not match",
-    path: ["confirmPassword"],
-  });
+const defaultValues: SignUpFields = {
+  email: "",
+  password: "",
+  confirmPassword: "",
+};
 
 export function useSignUpForm() {
   const navigate = useNavigate();
 
   const form = useAppForm({
-    defaultValues: {
-      email: "",
-      password: "",
-      confirmPassword: "",
-    },
+    defaultValues,
     onSubmit: async ({ value }) => {
       await authClient.signUp.email(
         {
@@ -42,7 +32,8 @@ export function useSignUpForm() {
       );
     },
     validators: {
-      onChange: signUpSchema,
+      onChangeAsync: signUpSchema,
+      onChangeAsyncDebounceMs: VALIDATOR_DEBOUNCE_MS,
     },
   });
 

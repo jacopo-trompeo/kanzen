@@ -1,18 +1,16 @@
-import * as z from "zod";
 import { useAppForm } from "@/hooks/form";
 import { authClient } from "@/lib/auth/client";
+import { signInSchema, VALIDATOR_DEBOUNCE_MS } from "../-shared/validation";
+import type { BaseAuthFields } from "../-utils/types";
 
-const signInSchema = z.object({
-  email: z.email("Please enter a valid email address."),
-  password: z.string().min(8, "Password must be at least 8 characters long."),
-});
+const defaultValues: BaseAuthFields = {
+  email: "",
+  password: "",
+};
 
 export function useSignInForm() {
   const form = useAppForm({
-    defaultValues: {
-      email: "",
-      password: "",
-    },
+    defaultValues,
     onSubmit: async ({ value }) => {
       await authClient.signIn.email({
         ...value,
@@ -20,7 +18,8 @@ export function useSignInForm() {
       });
     },
     validators: {
-      onChange: signInSchema,
+      onChangeAsync: signInSchema,
+      onChangeAsyncDebounceMs: VALIDATOR_DEBOUNCE_MS,
     },
   });
 
