@@ -1,7 +1,7 @@
 import { useAppForm } from "@/hooks/form";
 import { authClient } from "@/lib/auth/client";
+import type { BaseAuthFields } from "../-shared/types";
 import { signInSchema, VALIDATOR_DEBOUNCE_MS } from "../-shared/validation";
-import type { BaseAuthFields } from "../-utils/types";
 
 const defaultValues: BaseAuthFields = {
   email: "",
