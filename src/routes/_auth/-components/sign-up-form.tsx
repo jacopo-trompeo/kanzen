@@ -32,7 +32,7 @@ export function SignUpForm() {
       </FieldGroup>
 
       <FormFooter
-        to="/sign-in"
+        linkTo="/sign-in"
         text="Already have an account?"
         linkText="Sign in"
       >

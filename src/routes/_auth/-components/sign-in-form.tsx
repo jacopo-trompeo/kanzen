@@ -25,7 +25,7 @@ export function SignInForm() {
       </FieldGroup>
 
       <FormFooter
-        to="/sign-up"
+        linkTo="/sign-up"
         text="Don't have an account?"
         linkText="Sign up"
       >
