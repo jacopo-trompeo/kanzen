@@ -5,6 +5,9 @@ export const authMiddleware = createMiddleware().server(
   async ({ next, request }) => {
     const session = await auth.api.getSession({
       headers: request.headers,
+      query: {
+        disableCookieCache: true,
+      },
     });
     return next({
       context: { session },

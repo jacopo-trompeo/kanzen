@@ -1,4 +1,7 @@
+import { createServerOnlyFn } from "@tanstack/react-start";
 import { drizzle } from "drizzle-orm/node-postgres";
 import { env } from "@/env";
 
-export const db = drizzle(env.DATABASE_URL);
+const getDatabse = createServerOnlyFn(() => drizzle(env.DATABASE_URL));
+
+export const db = getDatabse();
