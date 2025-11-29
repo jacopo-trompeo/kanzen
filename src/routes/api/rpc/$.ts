@@ -1,12 +1,12 @@
 import { onError } from "@orpc/server";
 import { RPCHandler } from "@orpc/server/fetch";
 import { createFileRoute } from "@tanstack/react-router";
-import { createContext } from "@/server/orpc/context";
-import { appRouter } from "@/server/orpc/routers";
+import { createContext } from "@/domains/shared/server/orpc/context";
+import { appRouter } from "@/domains/shared/server/orpc/routers";
 
 const rpcHandler = new RPCHandler(appRouter, {
   interceptors: [
-    onError((error) => {
+    onError((error: Error) => {
       console.error(error);
     }),
   ],
