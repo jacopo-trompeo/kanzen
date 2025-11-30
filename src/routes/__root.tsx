@@ -9,7 +9,7 @@ import {
 } from "@tanstack/react-router";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 import type { ReactNode } from "react";
-import { getUser } from "@/domains/auth/functions/get-user.function";
+import { getUser } from "@/domains/auth/functions/get-user";
 import type { orpc } from "@/domains/shared/server/orpc";
 import css from "../styles.css?url";
 
