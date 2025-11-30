@@ -1,33 +1,9 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { authClient } from "@/domains/auth/lib/client";
-import { Button } from "@/domains/shared/components/ui/button";
+import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/_app/")({
-  component: Home,
+  component: DictionaryPage,
 });
 
-function Home() {
-  const { user } = Route.useRouteContext();
-  const navigate = useNavigate();
-
-  return (
-    <main>
-      <div>Welcome {user?.email}</div>
-      <Button
-        onClick={() => {
-          authClient.signOut({
-            fetchOptions: {
-              onSuccess: () => {
-                navigate({
-                  to: "/sign-in",
-                });
-              },
-            },
-          });
-        }}
-      >
-        Logout
-      </Button>
-    </main>
-  );
+function DictionaryPage() {
+  return <div>Hello "/_app/"!</div>;
 }

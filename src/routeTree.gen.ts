@@ -14,7 +14,12 @@ import { Route as AppRouteRouteImport } from './routes/_app/route'
 import { Route as AppIndexRouteImport } from './routes/_app/index'
 import { Route as AuthSignUpRouteImport } from './routes/_auth/sign-up'
 import { Route as AuthSignInRouteImport } from './routes/_auth/sign-in'
-import { Route as AppAboutRouteImport } from './routes/_app/about'
+import { Route as AppVideoPlayerRouteImport } from './routes/_app/video-player'
+import { Route as AppTextHookerRouteImport } from './routes/_app/text-hooker'
+import { Route as AppSettingsRouteImport } from './routes/_app/settings'
+import { Route as AppReaderRouteImport } from './routes/_app/reader'
+import { Route as AppGrammarRouteImport } from './routes/_app/grammar'
+import { Route as AppAiRouteImport } from './routes/_app/ai'
 import { Route as ApiRpcSplatRouteImport } from './routes/api/rpc/$'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 
@@ -41,9 +46,34 @@ const AuthSignInRoute = AuthSignInRouteImport.update({
   path: '/sign-in',
   getParentRoute: () => AuthRouteRoute,
 } as any)
-const AppAboutRoute = AppAboutRouteImport.update({
-  id: '/about',
-  path: '/about',
+const AppVideoPlayerRoute = AppVideoPlayerRouteImport.update({
+  id: '/video-player',
+  path: '/video-player',
+  getParentRoute: () => AppRouteRoute,
+} as any)
+const AppTextHookerRoute = AppTextHookerRouteImport.update({
+  id: '/text-hooker',
+  path: '/text-hooker',
+  getParentRoute: () => AppRouteRoute,
+} as any)
+const AppSettingsRoute = AppSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => AppRouteRoute,
+} as any)
+const AppReaderRoute = AppReaderRouteImport.update({
+  id: '/reader',
+  path: '/reader',
+  getParentRoute: () => AppRouteRoute,
+} as any)
+const AppGrammarRoute = AppGrammarRouteImport.update({
+  id: '/grammar',
+  path: '/grammar',
+  getParentRoute: () => AppRouteRoute,
+} as any)
+const AppAiRoute = AppAiRouteImport.update({
+  id: '/ai',
+  path: '/ai',
   getParentRoute: () => AppRouteRoute,
 } as any)
 const ApiRpcSplatRoute = ApiRpcSplatRouteImport.update({
@@ -58,7 +88,12 @@ const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/about': typeof AppAboutRoute
+  '/ai': typeof AppAiRoute
+  '/grammar': typeof AppGrammarRoute
+  '/reader': typeof AppReaderRoute
+  '/settings': typeof AppSettingsRoute
+  '/text-hooker': typeof AppTextHookerRoute
+  '/video-player': typeof AppVideoPlayerRoute
   '/sign-in': typeof AuthSignInRoute
   '/sign-up': typeof AuthSignUpRoute
   '/': typeof AppIndexRoute
@@ -66,7 +101,12 @@ export interface FileRoutesByFullPath {
   '/api/rpc/$': typeof ApiRpcSplatRoute
 }
 export interface FileRoutesByTo {
-  '/about': typeof AppAboutRoute
+  '/ai': typeof AppAiRoute
+  '/grammar': typeof AppGrammarRoute
+  '/reader': typeof AppReaderRoute
+  '/settings': typeof AppSettingsRoute
+  '/text-hooker': typeof AppTextHookerRoute
+  '/video-player': typeof AppVideoPlayerRoute
   '/sign-in': typeof AuthSignInRoute
   '/sign-up': typeof AuthSignUpRoute
   '/': typeof AppIndexRoute
@@ -77,7 +117,12 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_app': typeof AppRouteRouteWithChildren
   '/_auth': typeof AuthRouteRouteWithChildren
-  '/_app/about': typeof AppAboutRoute
+  '/_app/ai': typeof AppAiRoute
+  '/_app/grammar': typeof AppGrammarRoute
+  '/_app/reader': typeof AppReaderRoute
+  '/_app/settings': typeof AppSettingsRoute
+  '/_app/text-hooker': typeof AppTextHookerRoute
+  '/_app/video-player': typeof AppVideoPlayerRoute
   '/_auth/sign-in': typeof AuthSignInRoute
   '/_auth/sign-up': typeof AuthSignUpRoute
   '/_app/': typeof AppIndexRoute
@@ -87,19 +132,40 @@ export interface FileRoutesById {
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    | '/about'
+    | '/ai'
+    | '/grammar'
+    | '/reader'
+    | '/settings'
+    | '/text-hooker'
+    | '/video-player'
     | '/sign-in'
     | '/sign-up'
     | '/'
     | '/api/auth/$'
     | '/api/rpc/$'
   fileRoutesByTo: FileRoutesByTo
-  to: '/about' | '/sign-in' | '/sign-up' | '/' | '/api/auth/$' | '/api/rpc/$'
+  to:
+    | '/ai'
+    | '/grammar'
+    | '/reader'
+    | '/settings'
+    | '/text-hooker'
+    | '/video-player'
+    | '/sign-in'
+    | '/sign-up'
+    | '/'
+    | '/api/auth/$'
+    | '/api/rpc/$'
   id:
     | '__root__'
     | '/_app'
     | '/_auth'
-    | '/_app/about'
+    | '/_app/ai'
+    | '/_app/grammar'
+    | '/_app/reader'
+    | '/_app/settings'
+    | '/_app/text-hooker'
+    | '/_app/video-player'
     | '/_auth/sign-in'
     | '/_auth/sign-up'
     | '/_app/'
@@ -151,11 +217,46 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthSignInRouteImport
       parentRoute: typeof AuthRouteRoute
     }
-    '/_app/about': {
-      id: '/_app/about'
-      path: '/about'
-      fullPath: '/about'
-      preLoaderRoute: typeof AppAboutRouteImport
+    '/_app/video-player': {
+      id: '/_app/video-player'
+      path: '/video-player'
+      fullPath: '/video-player'
+      preLoaderRoute: typeof AppVideoPlayerRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
+    '/_app/text-hooker': {
+      id: '/_app/text-hooker'
+      path: '/text-hooker'
+      fullPath: '/text-hooker'
+      preLoaderRoute: typeof AppTextHookerRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
+    '/_app/settings': {
+      id: '/_app/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof AppSettingsRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
+    '/_app/reader': {
+      id: '/_app/reader'
+      path: '/reader'
+      fullPath: '/reader'
+      preLoaderRoute: typeof AppReaderRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
+    '/_app/grammar': {
+      id: '/_app/grammar'
+      path: '/grammar'
+      fullPath: '/grammar'
+      preLoaderRoute: typeof AppGrammarRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
+    '/_app/ai': {
+      id: '/_app/ai'
+      path: '/ai'
+      fullPath: '/ai'
+      preLoaderRoute: typeof AppAiRouteImport
       parentRoute: typeof AppRouteRoute
     }
     '/api/rpc/$': {
@@ -176,12 +277,22 @@ declare module '@tanstack/react-router' {
 }
 
 interface AppRouteRouteChildren {
-  AppAboutRoute: typeof AppAboutRoute
+  AppAiRoute: typeof AppAiRoute
+  AppGrammarRoute: typeof AppGrammarRoute
+  AppReaderRoute: typeof AppReaderRoute
+  AppSettingsRoute: typeof AppSettingsRoute
+  AppTextHookerRoute: typeof AppTextHookerRoute
+  AppVideoPlayerRoute: typeof AppVideoPlayerRoute
   AppIndexRoute: typeof AppIndexRoute
 }
 
 const AppRouteRouteChildren: AppRouteRouteChildren = {
-  AppAboutRoute: AppAboutRoute,
+  AppAiRoute: AppAiRoute,
+  AppGrammarRoute: AppGrammarRoute,
+  AppReaderRoute: AppReaderRoute,
+  AppSettingsRoute: AppSettingsRoute,
+  AppTextHookerRoute: AppTextHookerRoute,
+  AppVideoPlayerRoute: AppVideoPlayerRoute,
   AppIndexRoute: AppIndexRoute,
 }
 
