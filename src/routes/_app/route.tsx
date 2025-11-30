@@ -1,4 +1,10 @@
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
+import { AppSidebar } from "@/domains/shared/components/app-sidebar";
+import {
+  getSidebarOpenStateCookie,
+  SidebarProvider,
+  SidebarTrigger,
+} from "@/domains/shared/components/ui/sidebar";
 
 export const Route = createFileRoute("/_app")({
   beforeLoad: async ({ context }) => {
@@ -10,9 +16,21 @@ export const Route = createFileRoute("/_app")({
 
     return { user: context.user };
   },
+  loader: async () => {
+    const sidebarOpen = await getSidebarOpenStateCookie();
+    return { sidebarOpen };
+  },
   component: Layout,
 });
 
 function Layout() {
-  return <Outlet />;
+  const { sidebarOpen } = Route.useLoaderData();
+
+  return (
+    <SidebarProvider defaultOpen={sidebarOpen}>
+      <AppSidebar />
+      <SidebarTrigger />
+      <Outlet />
+    </SidebarProvider>
+  );
 }
