@@ -1,7 +1,7 @@
 import { useNavigate } from "@tanstack/react-router";
 import type { SignUpFields } from "@/domains/auth/types";
 import { VALIDATOR_DEBOUNCE_MS } from "@/domains/auth/types/constants";
-import { signUpSchema } from "@/domains/auth/types/schemas";
+import { SignUpSchema } from "@/domains/auth/types/schemas";
 import { useAppForm } from "@/domains/shared/hooks/form";
 import { authClient } from "../lib/client";
 
@@ -33,7 +33,7 @@ export function useSignUpForm() {
       );
     },
     validators: {
-      onChangeAsync: signUpSchema,
+      onChangeAsync: SignUpSchema,
       onChangeAsyncDebounceMs: VALIDATOR_DEBOUNCE_MS,
     },
   });

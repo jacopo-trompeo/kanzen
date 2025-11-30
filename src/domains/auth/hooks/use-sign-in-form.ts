@@ -1,6 +1,6 @@
 import type { BaseAuthFields } from "@/domains/auth/types";
 import { VALIDATOR_DEBOUNCE_MS } from "@/domains/auth/types/constants";
-import { signInSchema } from "@/domains/auth/types/schemas";
+import { SignInSchema } from "@/domains/auth/types/schemas";
 import { useAppForm } from "@/domains/shared/hooks/form";
 import { authClient } from "../lib/client";
 
@@ -19,7 +19,7 @@ export function useSignInForm() {
       });
     },
     validators: {
-      onChangeAsync: signInSchema,
+      onChangeAsync: SignInSchema,
       onChangeAsyncDebounceMs: VALIDATOR_DEBOUNCE_MS,
     },
   });
