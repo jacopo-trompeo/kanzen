@@ -13,7 +13,7 @@ export const Route = createFileRoute("/_app/text-hooker")({
   ssr: false,
   beforeLoad: () => {
     const stored = getFromLocalStorage<Line[]>(CLIPBOARD_STORAGE_KEY) ?? [];
-    clipboardStore.setState({ lines: stored });
+    clipboardStore.setState({ clipboardText: stored });
   },
 });
 
