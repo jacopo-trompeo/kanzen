@@ -1,1 +1,1 @@
-export const STORAGE_KEY = "clipboard_text";
+export const CLIPBOARD_STORAGE_KEY = "clipboard_text";

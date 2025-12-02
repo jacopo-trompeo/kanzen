@@ -1,14 +1,8 @@
-import { useCallback, useEffect, useState } from "react";
-import { setToLocalStorage } from "@/domains/shared/functions/local-storage";
-import type { Line } from "@/domains/text-hooker/types";
-import { STORAGE_KEY } from "@/domains/text-hooker/types/constants";
+import { useCallback, useEffect } from "react";
+import { addLineToClipboardStore } from "@/domains/text-hooker/stores/clipboard";
 
-export function useClipboardText(storedLines: Line[]) {
-  const [lines, setLines] = useState(storedLines);
-
+export function useClipboardInserterMonitor() {
   const handleMutation = useCallback((mutationsList: MutationRecord[]) => {
-    let text: string | null = null;
-
     for (const mutation of mutationsList) {
       if (
         mutation.target !== document.body ||
@@ -24,24 +18,13 @@ export function useClipboardText(storedLines: Line[]) {
         const element = node as Element;
         if (element.tagName !== "P") continue;
 
-        text = element.textContent.trim();
+        const text = element.textContent.trim();
         element.remove();
+
+        if (!text) continue;
+        addLineToClipboardStore(text);
       }
     }
-
-    if (!text) return;
-
-    setLines((prevLines) => {
-      const newLine = {
-        id: crypto.randomUUID(),
-        text,
-      };
-
-      const newState = [...prevLines, newLine];
-
-      setToLocalStorage(STORAGE_KEY, newState);
-      return newState;
-    });
   }, []);
 
   useEffect(() => {
@@ -53,6 +36,4 @@ export function useClipboardText(storedLines: Line[]) {
       observer.disconnect();
     };
   }, [handleMutation]);
-
-  return lines;
 }
