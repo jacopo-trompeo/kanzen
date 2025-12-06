@@ -1,7 +1,13 @@
 import { useCallback, useEffect } from "react";
 import { addLineToClipboardStore } from "@/domains/text-hooker/stores/clipboard";
 
-export function useClipboardInserterMonitor() {
+interface UseClipboardInserterMonitorProps {
+  disabled: boolean;
+}
+
+export function useClipboardInserterMonitor({
+  disabled,
+}: UseClipboardInserterMonitorProps) {
   const handleMutation = useCallback((mutationsList: MutationRecord[]) => {
     for (const mutation of mutationsList) {
       if (
@@ -28,6 +34,8 @@ export function useClipboardInserterMonitor() {
   }, []);
 
   useEffect(() => {
+    if (disabled) return;
+
     const observer = new MutationObserver(handleMutation);
     const observerOptions = { childList: true, attributes: false };
     observer.observe(document.body, observerOptions);
@@ -35,5 +43,5 @@ export function useClipboardInserterMonitor() {
     return () => {
       observer.disconnect();
     };
-  }, [handleMutation]);
+  }, [disabled, handleMutation]);
 }
