@@ -1,5 +1,5 @@
 import { useCallback, useEffect } from "react";
-import { addLine } from "@/domains/text-hooker/stores/db";
+import { addLogEntry } from "@/domains/text-hooker/lib/db";
 
 interface UseClipboardInserterMonitorProps {
   disabled: boolean;
@@ -29,7 +29,7 @@ export function useClipboardInserterMonitor({
           element.remove();
 
           if (!text) continue;
-          await addLine(text);
+          await addLogEntry(text);
         }
       }
     },

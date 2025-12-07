@@ -1,28 +1,37 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { getFromLocalStorage } from "@/domains/shared/functions/local-storage";
+import { getTextHookerSettings } from "@/domains/text-hooker/functions/get-text-hooker-settings";
 import { useClipboardInserterMonitor } from "@/domains/text-hooker/hooks/use-clipboard-inserter-monitor";
 import { useWebSocketClipboardMonitor } from "@/domains/text-hooker/hooks/use-websocket-clipboard-monitor";
-import { clipboardStore } from "@/domains/text-hooker/stores/clipboard";
-import type { Line } from "@/domains/text-hooker/types";
-import { CLIPBOARD_STORAGE_KEY } from "@/domains/text-hooker/types/constants";
-import { ClipboardText } from "@/domains/text-hooker/ui/clipboard-text";
-import { TextHookerPending } from "@/domains/text-hooker/ui/text-hooker-pending";
+import { updateTextHookerStoreSettings } from "@/domains/text-hooker/stores/settings";
+import { LogListToolbar } from "@/domains/text-hooker/ui/log-list-toolbar";
+import { LogPendingPlaceholder } from "@/domains/text-hooker/ui/log-pending-placeholder";
+import { TextLogList } from "@/domains/text-hooker/ui/text-log-list";
 
 export const Route = createFileRoute("/_app/text-hooker")({
   component: TextHookerPage,
-  pendingComponent: () => <TextHookerPending />,
+  pendingComponent: () => <LogPendingPlaceholder />,
   ssr: false,
-  beforeLoad: () => {
-    const stored = getFromLocalStorage<Line[]>(CLIPBOARD_STORAGE_KEY) ?? [];
-    clipboardStore.setState({ clipboardText: stored });
+  loader: async () => {
+    const settings = await getTextHookerSettings();
+    return { settings };
   },
 });
 
 function TextHookerPage() {
+  const { settings } = Route.useLoaderData();
   const { status } = useWebSocketClipboardMonitor();
   useClipboardInserterMonitor({
     disabled: status === "connected",
   });
 
-  return <ClipboardText />;
+  updateTextHookerStoreSettings({
+    fontSize: settings?.fontSize,
+  });
+
+  return (
+    <main className="relative w-full">
+      <TextLogList />
+      <LogListToolbar className="fixed right-10 bottom-5" />
+    </main>
+  );
 }
