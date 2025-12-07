@@ -1,5 +1,5 @@
 import { useCallback, useEffect } from "react";
-import { addLineToClipboardStore } from "@/domains/text-hooker/stores/clipboard";
+import { addLine } from "@/domains/text-hooker/stores/db";
 
 interface UseClipboardInserterMonitorProps {
   disabled: boolean;
@@ -8,30 +8,33 @@ interface UseClipboardInserterMonitorProps {
 export function useClipboardInserterMonitor({
   disabled,
 }: UseClipboardInserterMonitorProps) {
-  const handleMutation = useCallback((mutationsList: MutationRecord[]) => {
-    for (const mutation of mutationsList) {
-      if (
-        mutation.target !== document.body ||
-        mutation.type !== "childList" ||
-        mutation.addedNodes.length === 0
-      ) {
-        continue;
+  const handleMutation = useCallback(
+    async (mutationsList: MutationRecord[]) => {
+      for (const mutation of mutationsList) {
+        if (
+          mutation.target !== document.body ||
+          mutation.type !== "childList" ||
+          mutation.addedNodes.length === 0
+        ) {
+          continue;
+        }
+
+        for (const node of mutation.addedNodes) {
+          if (node.nodeType !== Node.ELEMENT_NODE) continue;
+
+          const element = node as Element;
+          if (element.tagName !== "P") continue;
+
+          const text = element.textContent.trim();
+          element.remove();
+
+          if (!text) continue;
+          await addLine(text);
+        }
       }
-
-      for (const node of mutation.addedNodes) {
-        if (node.nodeType !== Node.ELEMENT_NODE) continue;
-
-        const element = node as Element;
-        if (element.tagName !== "P") continue;
-
-        const text = element.textContent.trim();
-        element.remove();
-
-        if (!text) continue;
-        addLineToClipboardStore(text);
-      }
-    }
-  }, []);
+    },
+    [],
+  );
 
   useEffect(() => {
     if (disabled) return;

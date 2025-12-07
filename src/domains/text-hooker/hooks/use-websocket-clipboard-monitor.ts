@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { addLineToClipboardStore } from "@/domains/text-hooker/stores/clipboard";
 
 export function useWebSocketClipboardMonitor() {
   const [status, setStatus] = useState<"connected" | "disconnected" | "error">(
@@ -24,7 +23,7 @@ export function useWebSocketClipboardMonitor() {
     wsRef.current.onmessage = (event) => {
       const text = event.data;
       if (typeof text === "string" && text.trim()) {
-        addLineToClipboardStore(text.trim());
+        // addLineToClipboardStore(text.trim());
       }
     };
 

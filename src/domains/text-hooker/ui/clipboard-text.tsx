@@ -1,13 +1,13 @@
-import { useStore } from "@tanstack/react-store";
-import { clipboardStore } from "@/domains/text-hooker/stores/clipboard";
+import { useLiveQuery } from "dexie-react-hooks";
+import { getAllLines } from "@/domains/text-hooker/stores/db";
 import { ClipboardLine } from "./clipboard-line";
 
 export function ClipboardText() {
-  const { clipboardText } = useStore(clipboardStore);
+  const lines = useLiveQuery(() => getAllLines(), []) ?? [];
 
   return (
     <ul className="flex w-full flex-col gap-4">
-      {clipboardText.map((line) => (
+      {lines.map((line) => (
         <ClipboardLine key={line.id} line={line} />
       ))}
     </ul>

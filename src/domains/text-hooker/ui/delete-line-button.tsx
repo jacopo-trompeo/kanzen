@@ -1,9 +1,9 @@
 import { X } from "lucide-react";
 import { Button } from "@/domains/shared/components/ui/button";
-import { deleteLineFromClipboardStore } from "@/domains/text-hooker/stores/clipboard";
+import { deleteLine } from "@/domains/text-hooker/stores/db";
 
 interface DeleteLineButtonProps {
-  lineId: string | undefined;
+  lineId: number | undefined;
 }
 
 export function DeleteLineButton(props: DeleteLineButtonProps) {
@@ -14,9 +14,9 @@ export function DeleteLineButton(props: DeleteLineButtonProps) {
       variant="ghost"
       size="icon-xs"
       className="hover:bg-transparent"
-      onClick={() => {
+      onClick={async () => {
         if (!lineId) return;
-        deleteLineFromClipboardStore(lineId);
+        await deleteLine(lineId);
       }}
     >
       <X />
