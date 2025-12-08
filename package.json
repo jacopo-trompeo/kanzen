@@ -35,7 +35,6 @@
     "@tanstack/react-router-ssr-query": "^1.133.32",
     "@tanstack/react-start": "^1.133.27",
     "@tanstack/react-store": "^0.8.0",
-    "@tanstack/react-virtual": "^3.13.12",
     "@vitejs/plugin-react": "^5.1.0",
     "better-auth": "^1.3.34",
     "class-variance-authority": "^0.7.1",
