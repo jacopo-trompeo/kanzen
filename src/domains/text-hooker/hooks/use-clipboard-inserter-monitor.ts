@@ -1,5 +1,5 @@
 import { useCallback, useEffect } from "react";
-import { addLogEntry } from "@/domains/text-hooker/lib/db";
+import { addLogEntry } from "@/domains/text-hooker/functions/text-log-db";
 
 interface UseClipboardInserterMonitorProps {
   disabled: boolean;

@@ -4,6 +4,7 @@ import { X } from "lucide-react";
 import { Button } from "@/domains/shared/components/ui/button";
 import { Input } from "@/domains/shared/components/ui/input";
 import { cn } from "@/domains/shared/lib/utils";
+import { clearLogEntries } from "@/domains/text-hooker/functions/text-log-db";
 import { updateTextHookerSettings } from "@/domains/text-hooker/functions/update-text-hooker-settings";
 import { clearLogEntries } from "@/domains/text-hooker/lib/db";
 import {

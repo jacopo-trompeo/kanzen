@@ -1,6 +1,6 @@
 import { X } from "lucide-react";
 import { Button } from "@/domains/shared/components/ui/button";
-import { deleteLogEntry } from "@/domains/text-hooker/lib/db";
+import { deleteLogEntry } from "@/domains/text-hooker/functions/text-log-db";
 
 interface DeleteEntryButtonProps {
   entryId: number;
