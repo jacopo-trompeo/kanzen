@@ -1,4 +1,3 @@
-import { useStore } from "@tanstack/react-store";
 import { debounce } from "lodash";
 import { X } from "lucide-react";
 import { Button } from "@/domains/shared/components/ui/button";
@@ -6,17 +5,14 @@ import { Input } from "@/domains/shared/components/ui/input";
 import { cn } from "@/domains/shared/lib/utils";
 import { clearLogEntries } from "@/domains/text-hooker/functions/text-log-db";
 import { updateTextHookerSettings } from "@/domains/text-hooker/functions/update-text-hooker-settings";
-import { clearLogEntries } from "@/domains/text-hooker/lib/db";
-import {
-  textHookerSettingsStore,
-  updateTextHookerStoreSettings,
-} from "@/domains/text-hooker/stores/settings";
+import { useTextHookerSettings } from "@/domains/text-hooker/hooks/use-text-hooker-settings";
+import { updateTextHookerStoreSettings } from "@/domains/text-hooker/stores/settings";
 
 interface LogListToolbarProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 export function LogListToolbar(props: LogListToolbarProps) {
   const { className, ...rest } = props;
-  const { fontSize } = useStore(textHookerSettingsStore);
+  const { fontSize } = useTextHookerSettings();
 
   function handleFontSizeChange(fontSize: number) {
     updateTextHookerStoreSettings({
