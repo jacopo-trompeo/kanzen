@@ -5,8 +5,7 @@ import { TextLogEntry } from "./text-log-entry";
 
 export function TextLogList() {
   const textLog = useTextLog();
-  const scrollContainerRef = useAutoscroll({
-    content: textLog,
+  const scrollContainerRef = useAutoscroll(textLog, {
     onAtBottom: pruneLogEntries,
   });
 
