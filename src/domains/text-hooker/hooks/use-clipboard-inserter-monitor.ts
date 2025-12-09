@@ -1,13 +1,15 @@
 import { useCallback, useEffect } from "react";
 import { addLogEntry } from "@/domains/text-hooker/functions/text-log-db";
 
-interface UseClipboardInserterMonitorProps {
+interface UseClipboardInserterMonitorOptions {
   disabled: boolean;
 }
 
-export function useClipboardInserterMonitor({
-  disabled,
-}: UseClipboardInserterMonitorProps) {
+export function useClipboardInserterMonitor(
+  options: UseClipboardInserterMonitorOptions,
+) {
+  const { disabled } = options;
+
   const handleMutation = useCallback(
     async (mutationsList: MutationRecord[]) => {
       for (const mutation of mutationsList) {

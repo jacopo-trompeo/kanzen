@@ -1,11 +1,14 @@
+import { useAutoscroll } from "@/domains/shared/hooks/use-autoscroll";
 import { pruneLogEntries } from "@/domains/text-hooker/functions/text-log-db";
-import { useAutoscroll } from "@/domains/text-hooker/hooks/use-autoscroll";
 import { useTextLog } from "@/domains/text-hooker/hooks/use-text-log";
 import { TextLogEntry } from "./text-log-entry";
 
 export function TextLogList() {
   const textLog = useTextLog();
-  const scrollContainerRef = useAutoscroll(textLog, pruneLogEntries);
+  const scrollContainerRef = useAutoscroll({
+    content: textLog,
+    onAtBottom: pruneLogEntries,
+  });
 
   return (
     <div

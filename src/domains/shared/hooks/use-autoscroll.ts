@@ -1,13 +1,17 @@
 import { useEffect, useLayoutEffect, useRef } from "react";
-import type { LogEntry } from "@/domains/text-hooker/types";
-import {
-  AUTOSCROLL_PX_LEEWAY,
-  PRUNE_PX_THRESHOLD,
-} from "@/domains/text-hooker/types/constants";
 
-export function useAutoscroll(textLog: LogEntry[], onAtBottom: () => void) {
+export const STICKY_SCROLL_THRESHOLD = 300;
+export const AT_BOTTOM_TOLERANCE = 1;
+
+interface UseAutoscrollOptions {
+  content: unknown[];
+  onAtBottom?: () => void;
+}
+
+export function useAutoscroll(options: UseAutoscrollOptions) {
+  const { content, onAtBottom } = options;
   const scrollContainerRef = useRef<HTMLDivElement>(null);
-  const previousLogLengthRef = useRef(textLog.length);
+  const previousContentLengthRef = useRef(content.length);
   const isNearBottomRef = useRef(true);
   const onAtBottomRef = useRef(onAtBottom);
 
@@ -18,10 +22,10 @@ export function useAutoscroll(textLog: LogEntry[], onAtBottom: () => void) {
     const onScroll = () => {
       const { scrollTop, scrollHeight, clientHeight } = container;
       const distanceToBottom = scrollHeight - scrollTop - clientHeight;
-      isNearBottomRef.current = distanceToBottom <= AUTOSCROLL_PX_LEEWAY;
+      isNearBottomRef.current = distanceToBottom <= STICKY_SCROLL_THRESHOLD;
 
-      if (distanceToBottom < PRUNE_PX_THRESHOLD) {
-        onAtBottomRef.current();
+      if (distanceToBottom < AT_BOTTOM_TOLERANCE) {
+        onAtBottomRef.current?.();
       }
     };
 
@@ -36,14 +40,15 @@ export function useAutoscroll(textLog: LogEntry[], onAtBottom: () => void) {
     const container = scrollContainerRef.current;
     if (!container) return;
 
-    const wasNewMessageAdded = textLog.length > previousLogLengthRef.current;
+    const wasNewContentAdded =
+      content.length > previousContentLengthRef.current;
 
-    if (wasNewMessageAdded && isNearBottomRef.current) {
+    if (wasNewContentAdded && isNearBottomRef.current) {
       container.scrollTop = container.scrollHeight;
     }
 
-    previousLogLengthRef.current = textLog.length;
-  }, [textLog.length]);
+    previousContentLengthRef.current = content.length;
+  }, [content.length]);
 
   return scrollContainerRef;
 }
