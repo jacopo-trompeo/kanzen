@@ -1,14 +1,10 @@
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useRef } from "react";
+import { useWebSocketContext } from "@/domains/text-hooker/context/websocket-context";
 import { addLogEntry } from "@/domains/text-hooker/functions/text-log-db";
 
-interface UseClipboardInserterMonitorOptions {
-  disabled: boolean;
-}
-
-export function useClipboardInserterMonitor(
-  options: UseClipboardInserterMonitorOptions,
-) {
-  const { disabled } = options;
+export function useClipboardInserterMonitor() {
+  const { status } = useWebSocketContext();
+  const observerRef = useRef<MutationObserver | null>(null);
 
   const handleMutation = useCallback(
     async (mutationsList: MutationRecord[]) => {
@@ -39,14 +35,24 @@ export function useClipboardInserterMonitor(
   );
 
   useEffect(() => {
-    if (disabled) return;
+    if (status === "CONNECTED") {
+      if (observerRef.current) {
+        observerRef.current.disconnect();
+        observerRef.current = null;
+      }
+      return;
+    }
 
     const observer = new MutationObserver(handleMutation);
     const observerOptions = { childList: true, attributes: false };
     observer.observe(document.body, observerOptions);
+    observerRef.current = observer;
 
     return () => {
-      observer.disconnect();
+      if (observerRef.current) {
+        observerRef.current.disconnect();
+        observerRef.current = null;
+      }
     };
-  }, [disabled, handleMutation]);
+  }, [handleMutation, status]);
 }
