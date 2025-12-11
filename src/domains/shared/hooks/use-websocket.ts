@@ -64,6 +64,12 @@ export function useWebSocket(options: UseWebSocketOptions) {
     };
   }, []);
 
+  useEffect(() => {
+    if (webSocketRef.current && webSocketRef.current.url !== url) {
+      webSocketRef.current.close();
+    }
+  }, [url]);
+
   return {
     status,
     connect,
