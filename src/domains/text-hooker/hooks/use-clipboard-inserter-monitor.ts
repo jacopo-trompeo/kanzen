@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef } from "react";
-import { useWebSocketContext } from "@/domains/text-hooker/context/websocket-context";
+import { useWebSocketContext } from "@/domains/shared/context/websocket-context";
 import { addLogEntry } from "@/domains/text-hooker/functions/text-log-db";
 
 export function useClipboardInserterMonitor() {

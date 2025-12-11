@@ -1,20 +1,23 @@
 import { useEffect, useRef, useState } from "react";
-import { addLogEntry } from "@/domains/text-hooker/functions/text-log-db";
-import { useTextHookerSettings } from "./use-text-hooker-settings";
+import type { WebSocketStatus } from "@/domains/shared/types/websocket";
 
-export type WebSocketStatus =
-  | "DISCONNECTED"
-  | "CONNECTING"
-  | "CONNECTED"
-  | "ERROR";
+export interface UseWebSocketOptions {
+  url: string;
+  onMessage?: (event: MessageEvent) => void;
+}
 
-export function useWebSocketClipboardMonitor() {
+export function useWebSocket(options: UseWebSocketOptions) {
+  const { url, onMessage } = options;
   const [status, setStatus] = useState<WebSocketStatus>("DISCONNECTED");
   const webSocketRef = useRef<WebSocket | null>(null);
-  const { settings } = useTextHookerSettings();
+  const messageHandlerRef = useRef(onMessage);
+
+  useEffect(() => {
+    messageHandlerRef.current = onMessage;
+  }, [onMessage]);
 
   function connect() {
-    if (!settings?.webSocketUrl) return;
+    if (!url) return;
     if (
       webSocketRef.current?.readyState === WebSocket.OPEN ||
       webSocketRef.current?.readyState === WebSocket.CONNECTING
@@ -23,7 +26,7 @@ export function useWebSocketClipboardMonitor() {
     }
 
     setStatus("CONNECTING");
-    const webSocket = new WebSocket(settings.webSocketUrl);
+    const webSocket = new WebSocket(url);
     webSocketRef.current = webSocket;
 
     webSocket.onopen = () => {
@@ -36,9 +39,8 @@ export function useWebSocketClipboardMonitor() {
     };
 
     webSocket.onmessage = async (event) => {
-      const text = event.data;
-      if (typeof text === "string" && text.trim()) {
-        await addLogEntry(text.trim());
+      if (messageHandlerRef.current) {
+        messageHandlerRef.current(event);
       }
     };
 
