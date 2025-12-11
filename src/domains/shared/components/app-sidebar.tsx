@@ -79,7 +79,7 @@ export function AppSidebar() {
   });
 
   return (
-    <Sidebar variant="floating" collapsible="icon">
+    <Sidebar collapsible="icon">
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupContent>
