@@ -19,7 +19,10 @@ export function useAutoscroll(
   const previousContentLengthRef = useRef(content.length);
   const isNearBottomRef = useRef(true);
   const onAtBottomRef = useRef(onAtBottom);
-  onAtBottomRef.current = onAtBottom;
+
+  useLayoutEffect(() => {
+    onAtBottomRef.current = onAtBottom;
+  }, [onAtBottom]);
 
   useEffect(() => {
     const container = scrollContainerRef.current;
