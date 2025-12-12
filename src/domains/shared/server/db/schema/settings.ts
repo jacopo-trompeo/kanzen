@@ -31,6 +31,8 @@ export const textHookerSettings = pgTable(
   ],
 );
 
+export type TextHookerSettings = typeof textHookerSettings.$inferSelect;
+
 export const TextHookerSettingsInsertSchema = createInsertSchema(
   textHookerSettings,
   {
@@ -48,3 +50,7 @@ export const TextHookerSettingsInsertSchema = createInsertSchema(
 )
   .omit({ userId: true })
   .partial();
+
+export type TextHookerSettingsInsertType = z.infer<
+  typeof TextHookerSettingsInsertSchema
+>;

@@ -7,9 +7,7 @@ export function FontSizeInput() {
   const [fontSize, setFontSize] = useDebouncedState(settings?.fontSize, {
     onUpdate: async (newFontSize) => {
       await updateSettings.mutateAsync({
-        data: {
-          fontSize: newFontSize,
-        },
+        fontSize: newFontSize,
       });
     },
   });

@@ -9,9 +9,7 @@ export function WebSocketUrlInput() {
     {
       onUpdate: async (newUrl) => {
         await updateSettings.mutateAsync({
-          data: {
-            webSocketUrl: newUrl,
-          },
+          webSocketUrl: newUrl,
         });
       },
     },
