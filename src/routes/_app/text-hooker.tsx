@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { WebSocketProvider } from "@/domains/shared/context/websocket-context";
 import { addLogEntry } from "@/domains/text-hooker/functions/text-log-db";
+import { useClipboardInserterMonitor } from "@/domains/text-hooker/hooks/use-clipboard-inserter-monitor";
 import {
   settingsQueryOptions,
   useTextHookerSettings,
@@ -8,7 +9,6 @@ import {
 import { LogPendingPlaceholder } from "@/domains/text-hooker/ui/log-pending-placeholder";
 import { TextLogList } from "@/domains/text-hooker/ui/text-log-list";
 import { LogListToolbar } from "@/domains/text-hooker/ui/toolbar/log-list-toolbar";
-import { useClipboardInserterMonitor } from "@/domains/text-hooker/hooks/use-clipboard-inserter-monitor";
 
 export const Route = createFileRoute("/_app/text-hooker")({
   component: TextHookerPage,
