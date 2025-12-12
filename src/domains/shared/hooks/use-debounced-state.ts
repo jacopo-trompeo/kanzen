@@ -1,6 +1,8 @@
 import { debounce } from "radash";
 import { useCallback, useEffect, useRef, useState } from "react";
 
+const DEFAULT_DELAY = 500;
+
 interface UseDebouncedStateOptions<T> {
   delay?: number;
   onUpdate?: (value: T) => void;
@@ -10,7 +12,7 @@ export function useDebouncedState<T>(
   value: T,
   options: UseDebouncedStateOptions<T>,
 ) {
-  const { delay = 500, onUpdate } = options;
+  const { delay = DEFAULT_DELAY, onUpdate } = options;
   const [debouncedValue, setDebouncedValue] = useState<T>(value);
   const onUpdateRef = useRef(onUpdate);
 
