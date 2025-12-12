@@ -16,6 +16,13 @@ export const deleteLogEntry = createClientOnlyFn(async (id: number) => {
   return textHookerDb.logEntries.delete(id);
 });
 
+export const deleteLastEntry = createClientOnlyFn(async () => {
+  const lastEntry = await textHookerDb.logEntries.orderBy("id").last();
+  if (lastEntry) {
+    await textHookerDb.logEntries.delete(lastEntry.id);
+  }
+});
+
 export const clearLogEntries = createClientOnlyFn(async () => {
   return textHookerDb.logEntries.clear();
 });
