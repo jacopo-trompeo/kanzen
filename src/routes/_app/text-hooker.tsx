@@ -5,9 +5,10 @@ import {
   settingsQueryOptions,
   useTextHookerSettings,
 } from "@/domains/text-hooker/hooks/use-text-hooker-settings";
-import { LogListToolbar } from "@/domains/text-hooker/ui/log-list-toolbar";
 import { LogPendingPlaceholder } from "@/domains/text-hooker/ui/log-pending-placeholder";
 import { TextLogList } from "@/domains/text-hooker/ui/text-log-list";
+import { LogListToolbar } from "@/domains/text-hooker/ui/toolbar/log-list-toolbar";
+import { useClipboardInserterMonitor } from "@/domains/text-hooker/hooks/use-clipboard-inserter-monitor";
 
 export const Route = createFileRoute("/_app/text-hooker")({
   component: TextHookerPage,
@@ -16,6 +17,17 @@ export const Route = createFileRoute("/_app/text-hooker")({
     context.queryClient.ensureQueryData(settingsQueryOptions);
   },
 });
+
+function TextHookerShell() {
+  useClipboardInserterMonitor();
+
+  return (
+    <main className="relative w-full">
+      <TextLogList />
+      <LogListToolbar className="fixed right-10 bottom-5" />
+    </main>
+  );
+}
 
 function TextHookerPage() {
   const { settings } = useTextHookerSettings();
@@ -32,10 +44,7 @@ function TextHookerPage() {
       url={settings?.webSocketUrl || ""}
       onMessage={addLogEntryFromWebSocket}
     >
-      <main className="relative w-full">
-        <TextLogList />
-        <LogListToolbar className="fixed right-10 bottom-5" />
-      </main>
+      <TextHookerShell />
     </WebSocketProvider>
   );
 }
