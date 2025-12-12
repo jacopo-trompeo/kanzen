@@ -1,8 +1,8 @@
+import { authClient } from "@/domains/auth/lib/client";
 import type { BaseAuthFields } from "@/domains/auth/types";
 import { VALIDATOR_DEBOUNCE_MS } from "@/domains/auth/types/constants";
 import { SignInSchema } from "@/domains/auth/types/schemas";
 import { useAppForm } from "@/domains/shared/hooks/form";
-import { authClient } from "../lib/client";
 
 const defaultValues: BaseAuthFields = {
   email: "",

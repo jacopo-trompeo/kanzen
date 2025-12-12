@@ -1,9 +1,9 @@
 import { useNavigate } from "@tanstack/react-router";
+import { authClient } from "@/domains/auth/lib/client";
 import type { SignUpFields } from "@/domains/auth/types";
 import { VALIDATOR_DEBOUNCE_MS } from "@/domains/auth/types/constants";
 import { SignUpSchema } from "@/domains/auth/types/schemas";
 import { useAppForm } from "@/domains/shared/hooks/form";
-import { authClient } from "../lib/client";
 
 const defaultValues: SignUpFields = {
   email: "",
