@@ -31,15 +31,20 @@ export const textHookerSettings = pgTable(
   ],
 );
 
-export const TextHookerSettingsSchema = createInsertSchema(textHookerSettings, {
-  fontSize: (schema) =>
-    schema.min(1, "Font size must be at least 1px").default(20),
-  webSocketUrl: (schema) =>
-    schema
-      .regex(
-        /^wss?:\/\/.+/,
-        "WebSocket url must start with either ws:// or wss://",
-      )
-      .or(z.literal(""))
-      .optional(),
-});
+export const TextHookerSettingsInsertSchema = createInsertSchema(
+  textHookerSettings,
+  {
+    fontSize: (schema) =>
+      schema.min(1, "Font size must be at least 1px").default(20),
+    webSocketUrl: (schema) =>
+      schema
+        .regex(
+          /^wss?:\/\/.+/,
+          "WebSocket url must start with either ws:// or wss://",
+        )
+        .or(z.literal(""))
+        .optional(),
+  },
+)
+  .omit({ userId: true })
+  .partial();

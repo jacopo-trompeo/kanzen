@@ -3,7 +3,7 @@ import { eq } from "drizzle-orm";
 import { authMiddleware } from "@/domains/auth/middleware";
 import { db } from "@/domains/shared/server/db";
 import {
-  TextHookerSettingsSchema,
+  TextHookerSettingsInsertSchema,
   textHookerSettings,
 } from "@/domains/shared/server/db/schema/settings";
 
@@ -19,7 +19,7 @@ export const getTextHookerSettings = createServerFn({ method: "GET" })
 
 export const updateTextHookerSettings = createServerFn({ method: "POST" })
   .middleware([authMiddleware])
-  .inputValidator(TextHookerSettingsSchema.omit({ userId: true }).partial())
+  .inputValidator(TextHookerSettingsInsertSchema)
   .handler(async ({ context, data }) => {
     await db
       .update(textHookerSettings)
