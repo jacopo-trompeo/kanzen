@@ -1,20 +1,20 @@
 import * as z from "zod";
 
-const emailSchema = z.email("Please enter a valid email address.");
-const passwordSchema = z
+const EmailSchema = z.email("Please enter a valid email address.");
+const PasswordSchema = z
   .string()
   .min(8, "Password must be at least 8 characters long.");
 
-export const signInSchema = z.object({
-  email: emailSchema,
-  password: passwordSchema,
+export const SignInSchema = z.object({
+  email: EmailSchema,
+  password: PasswordSchema,
 });
 
-export const signUpSchema = z
+export const SignUpSchema = z
   .object({
-    email: emailSchema,
-    password: passwordSchema,
-    confirmPassword: passwordSchema,
+    email: EmailSchema,
+    password: PasswordSchema,
+    confirmPassword: PasswordSchema,
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords do not match",
