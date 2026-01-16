@@ -8,21 +8,48 @@ interface UseAutoscrollOptions {
   stickyScrollThreshold?: number;
 }
 
-export function useAutoscroll(
-  content: unknown[],
-  options: UseAutoscrollOptions = {},
-) {
+export function useAutoscroll(options: UseAutoscrollOptions = {}) {
   const { onAtBottom, stickyScrollThreshold = STICKY_SCROLL_THRESHOLD } =
     options;
 
-  const scrollContainerRef = useRef<HTMLDivElement>(null);
-  const previousContentLengthRef = useRef(content.length);
+  const scrollContainerRef = useRef<HTMLElement | null>(null);
+  const resizeObserverRef = useRef<ResizeObserver | null>(null);
   const isNearBottomRef = useRef(true);
   const onAtBottomRef = useRef(onAtBottom);
+  const thresholdRef = useRef(stickyScrollThreshold);
 
   useLayoutEffect(() => {
     onAtBottomRef.current = onAtBottom;
-  }, [onAtBottom]);
+    thresholdRef.current = stickyScrollThreshold;
+  }, [onAtBottom, stickyScrollThreshold]);
+
+  function setRef(node: HTMLElement | null) {
+    if (resizeObserverRef.current) {
+      resizeObserverRef.current.disconnect();
+      resizeObserverRef.current = null;
+    }
+
+    scrollContainerRef.current = node;
+
+    if (!node) return;
+
+    const resizeObserver = new ResizeObserver(() => {
+      if (!isNearBottomRef.current) return;
+
+      requestAnimationFrame(() => {
+        if (!scrollContainerRef.current) return;
+        scrollContainerRef.current.scrollTop =
+          scrollContainerRef.current.scrollHeight;
+      });
+    });
+
+    if (node.firstElementChild) {
+      resizeObserver.observe(node.firstElementChild);
+    }
+
+    resizeObserverRef.current = resizeObserver;
+    node.scrollTop = node.scrollHeight;
+  }
 
   useEffect(() => {
     const container = scrollContainerRef.current;
@@ -31,8 +58,8 @@ export function useAutoscroll(
     const onScroll = () => {
       const { scrollTop, scrollHeight, clientHeight } = container;
       const distanceToBottom = scrollHeight - scrollTop - clientHeight;
-      isNearBottomRef.current = distanceToBottom <= stickyScrollThreshold;
 
+      isNearBottomRef.current = distanceToBottom <= thresholdRef.current;
       if (distanceToBottom < AT_BOTTOM_TOLERANCE) {
         onAtBottomRef.current?.();
       }
@@ -43,21 +70,7 @@ export function useAutoscroll(
     return () => {
       container.removeEventListener("scroll", onScroll);
     };
-  }, [stickyScrollThreshold]);
+  }, []);
 
-  useLayoutEffect(() => {
-    const container = scrollContainerRef.current;
-    if (!container) return;
-
-    const wasNewContentAdded =
-      content.length > previousContentLengthRef.current;
-
-    if (wasNewContentAdded && isNearBottomRef.current) {
-      container.scrollTop = container.scrollHeight;
-    }
-
-    previousContentLengthRef.current = content.length;
-  }, [content.length]);
-
-  return scrollContainerRef;
+  return setRef;
 }

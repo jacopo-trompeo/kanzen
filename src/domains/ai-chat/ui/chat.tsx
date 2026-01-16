@@ -1,28 +1,16 @@
 import { fetchServerSentEvents, useChat } from "@tanstack/ai-react";
-import { RefreshCw, Send, Settings, StopCircle } from "lucide-react";
+import { Send, StopCircle } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/domains/shared/components/ui/button";
 import { Input } from "@/domains/shared/components/ui/input";
-import { Label } from "@/domains/shared/components/ui/label";
-import { ScrollArea } from "@/domains/shared/components/ui/scroll-area";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/domains/shared/components/ui/sheet";
-import { Textarea } from "@/domains/shared/components/ui/textarea";
+import { useAutoscroll } from "@/domains/shared/hooks/use-autoscroll";
 import { DEFAULT_SYSTEM_PROMPT } from "../types/constants";
 import { Message } from "./message";
 
 export function Chat() {
   const [input, setInput] = useState("");
-  const [apiKey, setApiKey] = useState("");
-  const [systemPrompt, setSystemPrompt] = useState(DEFAULT_SYSTEM_PROMPT);
-  const [openSettings, setOpenSettings] = useState(false);
 
-  const { messages, sendMessage, isLoading, stop, reload } = useChat({
+  const { messages, sendMessage, isLoading, stop } = useChat({
     connection: fetchServerSentEvents("api/chat", {
       body: {
         apiKey,
@@ -34,7 +22,9 @@ export function Chat() {
     },
   });
 
-  const scrollContainerRef = useAutoscroll(messages);
+  const scrollContainerRef = useAutoscroll({
+    stickyScrollThreshold: Number.POSITIVE_INFINITY,
+  });
 
   const hasMessages = messages.length > 0;
 
@@ -75,18 +65,23 @@ export function Chat() {
     <div className="flex h-screen w-full flex-col">
       {hasMessages ? (
         <>
-          <div className="mx-auto flex w-4xl flex-col gap-5 py-8">
-            {messages.map((message) => (
-              <Message
-                message={message}
-                key={message.id}
-                className={
-                  message.role === "user" ? "justify-end" : "justify-start"
-                }
-              />
-            ))}
+          <div
+            className="flex-1 overflow-y-auto [scrollbar-gutter:stable]"
+            ref={scrollContainerRef}
+          >
+            <div className="mx-auto flex w-4xl flex-col gap-5 py-8">
+              {messages.map((message) => (
+                <Message
+                  message={message}
+                  key={message.id}
+                  className={
+                    message.role === "user" ? "justify-end" : "justify-start"
+                  }
+                />
+              ))}
+            </div>
           </div>
-          <div className="mt-auto border-t bg-background py-4">{inputForm}</div>
+          <div className="border-t bg-background py-4">{inputForm}</div>
         </>
       ) : (
         <div className="flex flex-1 items-center justify-center">
