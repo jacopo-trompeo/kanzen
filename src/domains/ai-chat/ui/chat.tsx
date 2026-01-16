@@ -33,108 +33,66 @@ export function Chat() {
       console.error("Chat error:", error);
     },
   });
-  console.log("Messages:", messages);
+
+  const scrollContainerRef = useAutoscroll(messages);
+
+  const hasMessages = messages.length > 0;
+
+  const inputForm = (
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        if (input.trim() && !isLoading) {
+          sendMessage(input.trim());
+          setInput("");
+        }
+      }}
+      className="mx-auto flex w-full max-w-4xl gap-3 px-4"
+    >
+      <Input
+        value={input}
+        onChange={(e) => setInput(e.target.value)}
+        placeholder={
+          isLoading ? "Generating explaination..." : "Ask a question!"
+        }
+        className="flex-1"
+        disabled={isLoading}
+      />
+
+      {isLoading ? (
+        <Button type="button" variant="destructive" onClick={stop}>
+          <StopCircle className="mr-2 h-4 w-4" /> Stop
+        </Button>
+      ) : (
+        <Button type="submit" disabled={false}>
+          <Send className="h-4 w-4" />
+        </Button>
+      )}
+    </form>
+  );
 
   return (
-    <>
-      <header>
-        <Sheet open={openSettings} onOpenChange={setOpenSettings}>
-          <SheetTrigger asChild>
-            <Button variant="outline" size="icon">
-              <Settings className="h-5 w-5" />
-            </Button>
-          </SheetTrigger>
-          <SheetContent>
-            <SheetHeader>
-              <SheetTitle>AI Settings</SheetTitle>
-            </SheetHeader>
-            <div className="mt-6 flex flex-col gap-6 px-5">
-              <div className="space-y-2">
-                <Label htmlFor="api-key">OpenAI API Key</Label>
-                <Input
-                  id="api-key"
-                  type="password"
-                  placeholder="sk-..."
-                  value={apiKey}
-                  onChange={(e) => setApiKey(e.target.value)}
-                />
-                <p className="text-muted-foreground text-xs">
-                  Required for the MVP. Not stored on server.
-                </p>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="prompt">System Persona</Label>
-                <Textarea
-                  id="prompt"
-                  className="min-h-[200px] font-mono text-xs"
-                  value={systemPrompt}
-                  onChange={(e) => setSystemPrompt(e.target.value)}
-                />
-              </div>
-            </div>
-          </SheetContent>
-        </Sheet>
-      </header>
-
-      <ScrollArea>
-        {messages.map((message) => (
-          <Message
-            message={message}
-            key={message.id}
-            className={
-              message.role === "user" ? "justify-end" : "justify-start"
-            }
-          />
-        ))}
-      </ScrollArea>
-
-      <div className="border-t bg-background p-4">
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            if (input.trim() && !isLoading) {
-              sendMessage(input.trim());
-              setInput("");
-            }
-          }}
-          className="mx-auto flex max-w-3xl gap-3"
-        >
-          <Input
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            placeholder={
-              isLoading
-                ? "Generating Japanese..."
-                : "Type a message in English or Japanese..."
-            }
-            className="flex-1"
-            disabled={isLoading}
-          />
-
-          {isLoading ? (
-            <Button type="button" variant="destructive" onClick={stop}>
-              <StopCircle className="mr-2 h-4 w-4" /> Stop
-            </Button>
-          ) : (
-            <Button type="submit" disabled={false}>
-              <Send className="h-4 w-4" />
-            </Button>
-          )}
-        </form>
-        <div className="mx-auto mt-2 max-w-3xl text-center">
-          {messages.length > 0 && !isLoading && (
-            <Button
-              variant="link"
-              size="sm"
-              onClick={() => reload()}
-              className="text-muted-foreground text-xs"
-            >
-              <RefreshCw className="mr-1 h-3 w-3" /> Regenerate last response
-            </Button>
-          )}
+    <div className="flex h-screen w-full flex-col">
+      {hasMessages ? (
+        <>
+          <div className="mx-auto flex w-4xl flex-col gap-5 py-8">
+            {messages.map((message) => (
+              <Message
+                message={message}
+                key={message.id}
+                className={
+                  message.role === "user" ? "justify-end" : "justify-start"
+                }
+              />
+            ))}
+          </div>
+          <div className="mt-auto border-t bg-background py-4">{inputForm}</div>
+        </>
+      ) : (
+        <div className="flex flex-1 items-center justify-center">
+          <div className="w-4xl">{inputForm}</div>
         </div>
-      </div>
-    </>
+      )}
+    </div>
   );
 }
