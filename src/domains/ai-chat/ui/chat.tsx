@@ -1,8 +1,6 @@
 import { fetchServerSentEvents, useChat } from "@tanstack/ai-react";
 import { RefreshCw, Send, Settings, StopCircle } from "lucide-react";
 import { useState } from "react";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
 import { Button } from "@/domains/shared/components/ui/button";
 import { Input } from "@/domains/shared/components/ui/input";
 import { Label } from "@/domains/shared/components/ui/label";
@@ -15,8 +13,8 @@ import {
   SheetTrigger,
 } from "@/domains/shared/components/ui/sheet";
 import { Textarea } from "@/domains/shared/components/ui/textarea";
-import { cn } from "@/domains/shared/lib/utils";
 import { DEFAULT_SYSTEM_PROMPT } from "../types/constants";
+import { Message } from "./message";
 
 export function Chat() {
   const [input, setInput] = useState("");
@@ -81,37 +79,13 @@ export function Chat() {
 
       <ScrollArea>
         {messages.map((message) => (
-          <div
+          <Message
+            message={message}
             key={message.id}
-            className={cn(
-              "mb-4",
-              message.role === "assistant" ? "text-blue-600" : "text-gray-800",
-            )}
-          >
-            <div>{message.role === "assistant" ? "🤖 AI:" : "🧑 User:"}</div>
-            <div>
-              {message.parts.map((part, idx) => {
-                if (part.type === "thinking") {
-                  return (
-                    <div
-                      key={idx}
-                      className="mb-2 text-gray-500 text-sm italic"
-                    >
-                      💭 Thinking: {part.content}
-                    </div>
-                  );
-                }
-                if (part.type === "text") {
-                  return (
-                    <ReactMarkdown key={idx} remarkPlugins={[remarkGfm]}>
-                      {part.content}
-                    </ReactMarkdown>
-                  );
-                }
-                return null;
-              })}
-            </div>
-          </div>
+            className={
+              message.role === "user" ? "justify-end" : "justify-start"
+            }
+          />
         ))}
       </ScrollArea>
 
