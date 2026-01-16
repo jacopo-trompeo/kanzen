@@ -18,7 +18,7 @@ export function Message(props: MessageProps) {
       <div
         className={cn(
           "flex max-w-[85%] flex-col gap-y-2 rounded-xl p-4 py-3",
-          isFromUser && "bg-primary text-primary-foreground",
+          isFromUser && "bg-primary text-primary-foreground"
         )}
       >
         {message.parts.map((part, idx) => {
