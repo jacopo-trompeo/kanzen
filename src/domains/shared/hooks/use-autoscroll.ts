@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef } from "react";
+import { useCallback, useLayoutEffect, useRef } from "react";
 
 export const STICKY_SCROLL_THRESHOLD = 300;
 export const AT_BOTTOM_TOLERANCE = 1;
@@ -23,54 +23,57 @@ export function useAutoscroll(options: UseAutoscrollOptions = {}) {
     thresholdRef.current = stickyScrollThreshold;
   }, [onAtBottom, stickyScrollThreshold]);
 
-  function setRef(node: HTMLElement | null) {
-    if (resizeObserverRef.current) {
-      resizeObserverRef.current.disconnect();
-      resizeObserverRef.current = null;
-    }
-
-    scrollContainerRef.current = node;
-
-    if (!node) return;
-
-    const resizeObserver = new ResizeObserver(() => {
-      if (!isNearBottomRef.current) return;
-
-      requestAnimationFrame(() => {
-        if (!scrollContainerRef.current) return;
-        scrollContainerRef.current.scrollTop =
-          scrollContainerRef.current.scrollHeight;
-      });
-    });
-
-    if (node.firstElementChild) {
-      resizeObserver.observe(node.firstElementChild);
-    }
-
-    resizeObserverRef.current = resizeObserver;
-    node.scrollTop = node.scrollHeight;
-  }
-
-  useEffect(() => {
+  const onScroll = useCallback(() => {
     const container = scrollContainerRef.current;
     if (!container) return;
 
-    const onScroll = () => {
-      const { scrollTop, scrollHeight, clientHeight } = container;
-      const distanceToBottom = scrollHeight - scrollTop - clientHeight;
+    const { scrollTop, scrollHeight, clientHeight } = container;
+    const distanceToBottom = scrollHeight - scrollTop - clientHeight;
 
-      isNearBottomRef.current = distanceToBottom <= thresholdRef.current;
-      if (distanceToBottom < AT_BOTTOM_TOLERANCE) {
-        onAtBottomRef.current?.();
-      }
-    };
-
-    container.addEventListener("scroll", onScroll, { passive: true });
-
-    return () => {
-      container.removeEventListener("scroll", onScroll);
-    };
+    isNearBottomRef.current = distanceToBottom <= thresholdRef.current;
+    if (distanceToBottom < AT_BOTTOM_TOLERANCE) {
+      onAtBottomRef.current?.();
+    }
   }, []);
 
-  return setRef;
+  const scrollToBottom = useCallback(() => {
+    const container = scrollContainerRef.current;
+    if (!container) return;
+
+    container.scrollTop = container.scrollHeight;
+  }, []);
+
+  const setRef = useCallback(
+    (node: HTMLElement | null) => {
+      if (scrollContainerRef.current) {
+        scrollContainerRef.current.removeEventListener("scroll", onScroll);
+      }
+
+      if (resizeObserverRef.current) {
+        resizeObserverRef.current.disconnect();
+        resizeObserverRef.current = null;
+      }
+
+      scrollContainerRef.current = node;
+
+      if (!node) return;
+
+      node.addEventListener("scroll", onScroll, { passive: true });
+
+      const resizeObserver = new ResizeObserver(() => {
+        if (!isNearBottomRef.current) return;
+        requestAnimationFrame(() => scrollToBottom());
+      });
+
+      if (node.firstElementChild) {
+        resizeObserver.observe(node.firstElementChild);
+      }
+
+      resizeObserverRef.current = resizeObserver;
+      node.scrollTop = node.scrollHeight;
+    },
+    [scrollToBottom, onScroll],
+  );
+
+  return { scrollContainerRef: setRef, scrollToBottom };
 }

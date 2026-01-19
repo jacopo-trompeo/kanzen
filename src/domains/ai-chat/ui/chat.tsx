@@ -22,19 +22,22 @@ export function Chat() {
     },
   });
 
-  const scrollContainerRef = useAutoscroll({
-    stickyScrollThreshold: Number.POSITIVE_INFINITY,
+  const { scrollContainerRef, scrollToBottom } = useAutoscroll({
+    stickyScrollThreshold: 0,
   });
 
   const hasMessages = messages.length > 0;
 
   const inputForm = (
     <form
-      onSubmit={(e) => {
+      onSubmit={async (e) => {
         e.preventDefault();
         if (input.trim() && !isLoading) {
           sendMessage(input.trim());
           setInput("");
+          setTimeout(() => {
+            scrollToBottom();
+          }, 0);
         }
       }}
       className="mx-auto flex w-full max-w-4xl gap-3 px-4"
