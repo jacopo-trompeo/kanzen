@@ -7,6 +7,7 @@ export const env = createEnv({
     BETTER_AUTH_SECRET: z.string().min(1),
     BETTER_AUTH_URL: z.url(),
     CORS_ORIGIN: z.url().optional(),
+    ENCRYPTION_KEY: z.string(),
   },
 
   clientPrefix: "VITE_",
