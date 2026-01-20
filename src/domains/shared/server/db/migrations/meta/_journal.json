@@ -15,6 +15,13 @@
       "when": 1765106784858,
       "tag": "0001_create_settings_tables",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1768926746542,
+      "tag": "0002_create_ai_chat_settings_table",
+      "breakpoints": true
     }
   ]
 }
