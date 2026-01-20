@@ -4,17 +4,20 @@ import { useState } from "react";
 import { Button } from "@/domains/shared/components/ui/button";
 import { Input } from "@/domains/shared/components/ui/input";
 import { useAutoscroll } from "@/domains/shared/hooks/use-autoscroll";
-import { DEFAULT_SYSTEM_PROMPT } from "../types/constants";
+import { useAiChatSettings } from "../hooks/use-ai-chat-settings";
+import { ChatSettings } from "./chat-settings";
 import { Message } from "./message";
 
 export function Chat() {
+  const { settings } = useAiChatSettings();
   const [input, setInput] = useState("");
 
   const { messages, sendMessage, isLoading, stop } = useChat({
     connection: fetchServerSentEvents("api/chat", {
       body: {
-        apiKey,
-        systemPrompt,
+        apiKey: settings?.apiKey,
+        systemPrompt: settings?.systemPrompt,
+        model: settings?.model,
       },
     }),
     onError: (error) => {
@@ -23,7 +26,7 @@ export function Chat() {
   });
 
   const { scrollContainerRef, scrollToBottom } = useAutoscroll({
-    stickyScrollThreshold: 0,
+    stickyScrollThreshold: 100,
   });
 
   const hasMessages = messages.length > 0;
@@ -51,6 +54,8 @@ export function Chat() {
         className="flex-1"
         disabled={isLoading}
       />
+
+      <ChatSettings />
 
       {isLoading ? (
         <Button type="button" variant="destructive" onClick={stop}>

@@ -1,0 +1,51 @@
+import { createServerFn } from "@tanstack/react-start";
+import { eq } from "drizzle-orm";
+import { authMiddleware } from "@/domains/auth/middleware";
+import { db } from "@/domains/shared/server/db";
+import {
+  AiChatSettingsInsertSchema,
+  aiChatSettings,
+} from "@/domains/shared/server/db/schema/settings";
+
+export const getAiChatSettings = createServerFn({ method: "GET" })
+  .middleware([authMiddleware])
+  .handler(async ({ context }) => {
+    const settings = await db.query.aiChatSettings.findFirst({
+      where: eq(aiChatSettings.userId, context.session.user.id),
+    });
+
+    if (!settings) {
+      return null;
+    }
+
+    return settings;
+  });
+
+export const updateAiChatSettings = createServerFn({ method: "POST" })
+  .middleware([authMiddleware])
+  .inputValidator(AiChatSettingsInsertSchema)
+  .handler(async ({ context, data }) => {
+    const userId = context.session.user.id;
+
+    const existing = await db.query.aiChatSettings.findFirst({
+      where: eq(aiChatSettings.userId, userId),
+    });
+
+    if (existing) {
+      await db
+        .update(aiChatSettings)
+        .set({
+          apiKey: data.apiKey !== undefined ? data.apiKey : existing.apiKey,
+          model: data.model !== undefined ? data.model : existing.model,
+          systemPrompt: data.systemPrompt !== undefined ? data.systemPrompt : existing.systemPrompt,
+        })
+        .where(eq(aiChatSettings.userId, userId));
+    } else {
+      await db.insert(aiChatSettings).values({
+        userId,
+        apiKey: data.apiKey,
+        model: data.model,
+        systemPrompt: data.systemPrompt,
+      });
+    }
+  });
