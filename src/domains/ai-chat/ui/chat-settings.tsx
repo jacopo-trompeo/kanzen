@@ -3,19 +3,17 @@ import { GROK_CHAT_MODELS } from "@tanstack/ai-grok";
 import { OPENAI_CHAT_MODELS } from "@tanstack/ai-openai";
 import { Settings } from "lucide-react";
 import { useState } from "react";
-import { useAiChatSettings } from "@/domains/ai-chat/hooks/use-ai-chat-settings";
-import { DEFAULT_SYSTEM_PROMPT } from "@/domains/ai-chat/types/constants";
+import { useChatSettingsForm } from "@/domains/ai-chat/hooks/use-chat-settings-form";
+import { SelectField } from "@/domains/shared/components/form/select-field";
+import { SubscribeButton } from "@/domains/shared/components/form/subscribe-button";
+import { TextField } from "@/domains/shared/components/form/text-field";
+import { TextareaField } from "@/domains/shared/components/form/textarea-field";
 import { Button } from "@/domains/shared/components/ui/button";
-import { Input } from "@/domains/shared/components/ui/input";
-import { Label } from "@/domains/shared/components/ui/label";
+import { FieldGroup } from "@/domains/shared/components/ui/field";
 import {
-  Select,
-  SelectContent,
   SelectGroup,
   SelectItem,
   SelectLabel,
-  SelectTrigger,
-  SelectValue,
 } from "@/domains/shared/components/ui/select";
 import {
   Sheet,
@@ -24,22 +22,10 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/domains/shared/components/ui/sheet";
-import { Textarea } from "@/domains/shared/components/ui/textarea";
 
 export function ChatSettings() {
-  const { settings, updateSettings, isLoading } = useAiChatSettings();
-  const [apiKey, setApiKey] = useState(settings?.apiKey || "");
-  const [selectedModel, setSelectedModel] = useState(settings?.model || "");
-  const [systemPrompt, setSystemPrompt] = useState(settings?.systemPrompt || DEFAULT_SYSTEM_PROMPT);
+  const form = useChatSettingsForm();
   const [openSettings, setOpenSettings] = useState(false);
-
-  const handleSave = async () => {
-    await updateSettings.mutateAsync({
-      apiKey,
-      model: selectedModel,
-      systemPrompt,
-    });
-  };
 
   return (
     <Sheet open={openSettings} onOpenChange={setOpenSettings}>
@@ -52,74 +38,88 @@ export function ChatSettings() {
         <SheetHeader>
           <SheetTitle>AI Settings</SheetTitle>
         </SheetHeader>
-        <div className="mt-6 flex flex-col gap-6 px-5">
-          <div className="space-y-2">
-            <Label htmlFor="api-key">OpenAI API Key</Label>
-            <Input
-              id="api-key"
-              type="password"
-              placeholder="sk-..."
-              value={apiKey}
-              onChange={(e) => setApiKey(e.target.value)}
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            form.handleSubmit().then(() => {
+              setOpenSettings(false);
+            });
+          }}
+          className="mt-6 flex flex-col gap-6 px-5"
+        >
+          <FieldGroup>
+            <form.AppField
+              name="apiKey"
+              children={() => (
+                <>
+                  <TextField type="password" placeholder="sk-...">
+                    OpenAI API Key
+                  </TextField>
+                  <p className="text-muted-foreground text-xs">
+                    Your API key is encrypted and stored securely.
+                  </p>
+                </>
+              )}
             />
-            <p className="text-muted-foreground text-xs">
-              Your API key is encrypted and stored securely.
-            </p>
-          </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="model">Model</Label>
-            <Select value={selectedModel} onValueChange={setSelectedModel}>
-              <SelectTrigger id="model" className="w-full">
-                <SelectValue placeholder="Select a model" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectLabel>Gemini</SelectLabel>
-                  {Object.values(GeminiTextModels).map((model) => (
-                    <SelectItem key={model} value={model}>
-                      {model}
-                    </SelectItem>
-                  ))}
-                </SelectGroup>
+            <form.AppField
+              name="model"
+              children={() => (
+                <SelectField
+                  placeholder="Select a model"
+                  options={
+                    <>
+                      <SelectGroup>
+                        <SelectLabel>Gemini</SelectLabel>
+                        {Object.values(GeminiTextModels).map((model) => (
+                          <SelectItem key={model} value={model}>
+                            {model}
+                          </SelectItem>
+                        ))}
+                      </SelectGroup>
 
-                <SelectGroup>
-                  <SelectLabel>Grok</SelectLabel>
-                  {Object.values(GROK_CHAT_MODELS).map((model) => (
-                    <SelectItem key={model} value={model}>
-                      {model}
-                    </SelectItem>
-                  ))}
-                </SelectGroup>
+                      <SelectGroup>
+                        <SelectLabel>Grok</SelectLabel>
+                        {Object.values(GROK_CHAT_MODELS).map((model) => (
+                          <SelectItem key={model} value={model}>
+                            {model}
+                          </SelectItem>
+                        ))}
+                      </SelectGroup>
 
-                <SelectGroup>
-                  <SelectLabel>OpenAI</SelectLabel>
-                  {Object.values(OPENAI_CHAT_MODELS).map((model) => (
-                    <SelectItem key={model} value={model}>
-                      {model}
-                    </SelectItem>
-                  ))}
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="prompt">System Persona</Label>
-            <Textarea
-              id="prompt"
-              className="min-h-[200px] font-mono text-xs"
-              value={systemPrompt}
-              onChange={(e) => setSystemPrompt(e.target.value)}
+                      <SelectGroup>
+                        <SelectLabel>OpenAI</SelectLabel>
+                        {Object.values(OPENAI_CHAT_MODELS).map((model) => (
+                          <SelectItem key={model} value={model}>
+                            {model}
+                          </SelectItem>
+                        ))}
+                      </SelectGroup>
+                    </>
+                  }
+                >
+                  Model
+                </SelectField>
+              )}
             />
-          </div>
+
+            <form.AppField
+              name="systemPrompt"
+              children={() => (
+                <TextareaField className="min-h-[200px] font-mono text-xs">
+                  System Persona
+                </TextareaField>
+              )}
+            />
+          </FieldGroup>
 
           <div className="flex justify-end pt-4">
-            <Button onClick={handleSave} disabled={isLoading}>
-              {isLoading ? "Saving..." : "Save Settings"}
-            </Button>
+            <form.AppForm>
+              <SubscribeButton>Save Settings</SubscribeButton>
+            </form.AppForm>
           </div>
-        </div>
+        </form>
       </SheetContent>
     </Sheet>
   );
