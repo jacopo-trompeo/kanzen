@@ -1,28 +1,69 @@
-import { chat, toServerSentEventsResponse } from "@tanstack/ai";
-import { GeminiTextAdapter, GeminiTextModels } from "@tanstack/ai-gemini";
-import { GROK_CHAT_MODELS, GrokTextAdapter } from "@tanstack/ai-grok";
-import { OPENAI_CHAT_MODELS, OpenAITextAdapter } from "@tanstack/ai-openai";
+import {
+  chat,
+  type StreamChunk,
+  toServerSentEventsResponse,
+} from "@tanstack/ai";
+import { GeminiTextAdapter } from "@tanstack/ai-gemini";
+import { GrokTextAdapter } from "@tanstack/ai-grok";
+import { OpenAITextAdapter } from "@tanstack/ai-openai";
 import { createFileRoute } from "@tanstack/react-router";
-import * as z from "zod";
+import { saveChatMessage } from "@/domains/ai-chat/functions/chat";
+import {
+  ChatRequestSchema,
+  GeminiModelSchema,
+  GrokModelSchema,
+  type Model,
+  OpenAIModelSchema,
+} from "@/domains/ai-chat/types/schemas";
+import { isZodEnum } from "@/domains/shared/helpers/zod";
 
-const ChatRequestSchema = z.object({
-  messages: z.array(
-    z.object({
-      role: z.enum(["tool", "user", "assistant"]),
-      content: z.string(),
-    }),
-  ),
-  apiKey: z.string().min(1),
-  conversationId: z.string().optional(),
-  systemPrompt: z.string().optional(),
-  model: z.string().optional(),
-});
+function createAdapter(model: Model, apiKey: string) {
+  if (isZodEnum(OpenAIModelSchema, model)) {
+    return new OpenAITextAdapter({ apiKey }, model);
+  }
 
-function isIcludedIn<T extends readonly string[]>(
-  list: T,
-  item: string | null | undefined,
-): item is T[number] {
-  return !!item && list.includes(item);
+  if (isZodEnum(GeminiModelSchema, model)) {
+    return new GeminiTextAdapter({ apiKey }, model);
+  }
+
+  if (isZodEnum(GrokModelSchema, model)) {
+    return new GrokTextAdapter({ apiKey }, model);
+  }
+
+  throw new Error(`Unsupported model: ${model}`);
+}
+
+function saveResponseToDatabase(
+  streamChunk: AsyncIterable<StreamChunk>,
+  conversationId: string,
+) {
+  let responseContent = "";
+  const wrappedStream = async function* () {
+    try {
+      for await (const event of streamChunk) {
+        if (event.type === "content") {
+          if (!event.content.startsWith(responseContent)) {
+            responseContent = event.content;
+          } else {
+            responseContent += event.content;
+          }
+        }
+        yield event;
+      }
+    } finally {
+      if (responseContent) {
+        await saveChatMessage({
+          data: {
+            chatId: conversationId,
+            role: "assistant",
+            content: responseContent,
+          },
+        });
+      }
+    }
+  };
+
+  return wrappedStream();
 }
 
 export const Route = createFileRoute("/api/chat")({
@@ -31,37 +72,30 @@ export const Route = createFileRoute("/api/chat")({
       POST: async ({ request }) => {
         const json = await request.json();
         const { messages, conversationId, systemPrompt, apiKey, model } =
-          ChatRequestSchema.parse(json);
+          await ChatRequestSchema.parseAsync(json);
 
-        const finalMessages = [
-          { role: "system", content: systemPrompt ?? "" },
-          ...messages,
-        ];
+        const userMessage = messages[messages.length - 1];
+        await saveChatMessage({
+          data: {
+            chatId: conversationId,
+            role: userMessage.role,
+            content: userMessage.content,
+          },
+        });
 
         try {
-          if (!model) {
-            throw new Error("Model is required");
-          }
+          const adapter = createAdapter(model, apiKey);
 
-          let adapter: Parameters<typeof chat>[0]["adapter"];
-
-          if (isIcludedIn(OPENAI_CHAT_MODELS, model)) {
-            adapter = new OpenAITextAdapter({ apiKey }, model);
-          } else if (isIcludedIn(GeminiTextModels, model)) {
-            adapter = new GeminiTextAdapter({ apiKey }, model);
-          } else if (isIcludedIn(GROK_CHAT_MODELS, model)) {
-            adapter = new GrokTextAdapter({ apiKey }, model);
-          } else {
-            throw new Error(`Unsupported model: ${model}`);
-          }
-
-          const stream = chat({
+          const streamResult = (await chat({
             adapter,
-            messages: finalMessages as any,
+            messages,
+            systemPrompts: systemPrompt ? [systemPrompt] : undefined,
             conversationId,
-          });
+          })) as AsyncIterable<StreamChunk>;
 
-          return toServerSentEventsResponse(stream);
+          return toServerSentEventsResponse(
+            saveResponseToDatabase(streamResult, conversationId),
+          );
         } catch (error) {
           return new Response(
             JSON.stringify({
