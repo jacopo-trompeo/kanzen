@@ -16,10 +16,7 @@ export function Chat() {
     <div className="flex h-screen w-full flex-col">
       {hasMessages ? (
         <>
-          <ChatMessageList
-            messages={messages}
-            scrollContainerRef={scrollContainerRef}
-          />
+          <ChatMessageList scrollContainerRef={scrollContainerRef} />
           <div className="border-t bg-background py-4">
             <UserMessageInput onSubmit={scrollToBottom} />
           </div>

@@ -2,23 +2,30 @@
 
 import type { UIMessage } from "@tanstack/ai";
 import { cn } from "@/domains/shared/lib/utils";
+import { MessageActions } from "./message-actions";
 import { TextPart } from "./text-part";
 import { ThinkingPart } from "./thinking-part";
 
-interface MessageProps extends Pick<React.ComponentProps<"div">, "className"> {
+interface MessageProps {
   message: UIMessage;
+  isLastAssistantMessage: boolean;
 }
 
 export function Message(props: MessageProps) {
-  const { message, className } = props;
+  const { message, isLastAssistantMessage } = props;
   const isFromUser = message.role === "user";
 
   return (
-    <div className={cn("flex w-full", className)}>
+    <div
+      className={cn(
+        "group flex w-full justify-start gap-2",
+        isFromUser ? "flex-row-reverse" : "flex-col items-start",
+      )}
+    >
       <div
         className={cn(
-          "flex max-w-[85%] flex-col gap-y-2 rounded-xl p-4 py-3",
-          isFromUser && "bg-primary text-primary-foreground"
+          "flex max-w-[85%] flex-col gap-y-2 rounded-xl px-4 py-3",
+          isFromUser && "bg-primary text-primary-foreground",
         )}
       >
         {message.parts.map((part, idx) => {
@@ -38,6 +45,11 @@ export function Message(props: MessageProps) {
           }
         })}
       </div>
+      <MessageActions
+        isFromUser={isFromUser}
+        messageParts={message.parts}
+        isLastAssistantMessage={isLastAssistantMessage}
+      />
     </div>
   );
 }

@@ -1,13 +1,17 @@
-import type { UIMessage } from "@tanstack/ai";
-import { Message } from "./message";
+import { useChatContext } from "@/domains/ai-chat/context/chat";
+import { Message } from "@/domains/ai-chat/ui/message";
 
 interface ChatMessageListProps {
-  messages: UIMessage[];
   scrollContainerRef: (node: HTMLElement | null) => void;
 }
 
 export function ChatMessageList(props: ChatMessageListProps) {
-  const { messages, scrollContainerRef } = props;
+  const { scrollContainerRef } = props;
+  const { messages } = useChatContext();
+
+  const lastAssistantMessage = messages.findLast(
+    (message) => message.role === "assistant",
+  );
 
   return (
     <div
@@ -19,9 +23,7 @@ export function ChatMessageList(props: ChatMessageListProps) {
           <Message
             key={message.id}
             message={message}
-            className={
-              message.role === "user" ? "justify-end" : "justify-start"
-            }
+            isLastAssistantMessage={lastAssistantMessage?.id === message.id}
           />
         ))}
       </div>
