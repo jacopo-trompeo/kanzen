@@ -29,6 +29,20 @@
       "when": 1769544411950,
       "tag": "0003_create_ai_chat_and_messages_tables",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1769875656832,
+      "tag": "0004_update_message_id_default_value",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1770473673347,
+      "tag": "0005_update_message_role_to_enum",
+      "breakpoints": true
     }
   ]
 }
