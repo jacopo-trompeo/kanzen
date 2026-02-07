@@ -43,6 +43,13 @@
       "when": 1770473673347,
       "tag": "0005_update_message_role_to_enum",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1770477315194,
+      "tag": "0006_update_system_prompt_default_value",
+      "breakpoints": true
     }
   ]
 }

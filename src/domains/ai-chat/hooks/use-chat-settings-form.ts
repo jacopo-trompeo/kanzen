@@ -1,5 +1,4 @@
 import { useAiChatSettings } from "@/domains/ai-chat/hooks/use-ai-chat-settings";
-import { DEFAULT_SYSTEM_PROMPT } from "@/domains/ai-chat/types/constants";
 import { useAppForm } from "@/domains/shared/hooks/form";
 
 type ChatSettingsFields = {
@@ -14,7 +13,7 @@ export function useChatSettingsForm() {
   const defaultValues: ChatSettingsFields = {
     apiKey: settings?.apiKey || "",
     model: settings?.model || "",
-    systemPrompt: settings?.systemPrompt || DEFAULT_SYSTEM_PROMPT,
+    systemPrompt: settings?.systemPrompt || "",
   };
 
   const form = useAppForm({
