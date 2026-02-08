@@ -6,7 +6,12 @@ type ChatRenameFields = {
   title: string;
 };
 
-export function useChatRenameForm(chat: Chat, onComplete: () => void) {
+interface ChatRenameFormOptions {
+  onComplete: () => void;
+}
+
+export function useChatRenameForm(chat: Chat, options: ChatRenameFormOptions) {
+  const { onComplete } = options;
   const { mutate: renameChat } = useRenameChat();
 
   const defaultValues: ChatRenameFields = {

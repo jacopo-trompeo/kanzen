@@ -8,8 +8,9 @@ interface ChatItemRenameProps {
   onComplete: () => void;
 }
 
-export function ChatItemRename({ chat, onComplete }: ChatItemRenameProps) {
-  const form = useChatRenameForm(chat, onComplete);
+export function ChatItemRename(props: ChatItemRenameProps) {
+  const { chat, onComplete } = props;
+  const form = useChatRenameForm(chat, { onComplete });
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {

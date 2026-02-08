@@ -8,12 +8,11 @@ import {
   getAiChatSettings,
   updateAiChatSettings,
 } from "@/domains/ai-chat/functions/settings";
+import { AI_CHAT_SETTINGS_KEY } from "@/domains/ai-chat/lib/query-keys";
 import type { AiChatSettingsInsertType } from "@/domains/shared/server/db/schema/settings";
 
-const QUERY_KEY = ["ai-chat-settings"];
-
 export const aiChatSettingsQueryOptions = queryOptions({
-  queryKey: QUERY_KEY,
+  queryKey: [AI_CHAT_SETTINGS_KEY],
   queryFn: () => getAiChatSettings(),
   staleTime: Number.POSITIVE_INFINITY,
 });
@@ -27,7 +26,7 @@ export function useAiChatSettings() {
       await updateAiChatSettings({ data: newSettings });
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: QUERY_KEY });
+      queryClient.invalidateQueries({ queryKey: [AI_CHAT_SETTINGS_KEY] });
     },
   });
 

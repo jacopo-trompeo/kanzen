@@ -1,12 +1,11 @@
 import type { InfiniteData } from "@tanstack/react-query";
 import { updateChatTitle } from "@/domains/ai-chat/functions/chat";
+import { USER_CHATS_KEY } from "@/domains/ai-chat/lib/query-keys";
 import type {
   ChatsPageData,
   UpdateChatTitleParams,
 } from "@/domains/ai-chat/types";
 import { useOptimisticUpdate } from "@/domains/shared/hooks/use-optimistic-update";
-
-const QUERY_KEY = ["user-chats"];
 
 export function useRenameChat() {
   return useOptimisticUpdate<
@@ -14,7 +13,7 @@ export function useRenameChat() {
     UpdateChatTitleParams,
     void
   >({
-    queryKey: QUERY_KEY,
+    queryKey: [USER_CHATS_KEY],
     mutationFn: ({ chatId, title }) => {
       return updateChatTitle({ data: { chatId, title } });
     },

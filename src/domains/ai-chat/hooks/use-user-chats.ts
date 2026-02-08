@@ -1,12 +1,11 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { getUserChats } from "@/domains/ai-chat/functions/chat";
-
-const QUERY_KEY = ["user-chats"];
+import { USER_CHATS_KEY } from "@/domains/ai-chat/lib/query-keys";
 
 export function useUserChats() {
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
     useInfiniteQuery({
-      queryKey: QUERY_KEY,
+      queryKey: [USER_CHATS_KEY],
       queryFn: ({ pageParam }) => {
         return getUserChats({ data: { limit: 5, offset: pageParam } });
       },

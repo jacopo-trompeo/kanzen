@@ -1,5 +1,6 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { useChatContext } from "@/domains/ai-chat/context/chat";
+import { USER_CHATS_KEY } from "@/domains/ai-chat/lib/query-keys";
 import { useAppForm } from "@/domains/shared/hooks/form";
 
 type UserInputFields = {
@@ -19,7 +20,7 @@ export function useUserInputForm() {
     onSubmit: async ({ value }) => {
       if (value.message.trim() && !isLoading) {
         sendMessage(value.message.trim());
-        queryClient.invalidateQueries({ queryKey: ["user-chats"] });
+        queryClient.invalidateQueries({ queryKey: [USER_CHATS_KEY] });
       }
     },
   });
