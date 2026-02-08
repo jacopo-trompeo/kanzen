@@ -19,6 +19,7 @@ export const ModelSchema = z.union([
   GeminiModelSchema,
   GrokModelSchema,
 ]);
+
 export type Model = z.infer<typeof ModelSchema>;
 
 export const ChatRequestSchema = z.object({
@@ -34,11 +35,24 @@ export const ChatRequestSchema = z.object({
   model: ModelSchema,
 });
 
-export const GetChatMessagesRequestSchema = z.object({
-  chatId: z.string(),
-});
-
 export const MessageInsertSchema = createInsertSchema(message, {
   role: MessageRoleSchema,
   content: (schema) => schema.min(1, "Message content cannot be empty"),
 }).omit({ id: true, createdAt: true });
+
+export const ChatBaseRequestSchema = z.object({
+  chatId: z.string(),
+});
+
+export const GetUserChatsRequestSchema = z.object({
+  limit: z.number().min(1).max(50).default(15),
+  offset: z.number().min(0).default(0),
+});
+
+export const UpdateChatTitleRequestSchema = ChatBaseRequestSchema.extend({
+  title: z.string().min(1).max(200),
+});
+
+export const AISearchSchema = z.object({
+  conversationId: z.string().optional(),
+});
