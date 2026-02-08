@@ -7,7 +7,7 @@ import { GeminiTextAdapter } from "@tanstack/ai-gemini";
 import { GrokTextAdapter } from "@tanstack/ai-grok";
 import { OpenAITextAdapter } from "@tanstack/ai-openai";
 import { createFileRoute } from "@tanstack/react-router";
-import { saveChatMessage } from "@/domains/ai-chat/functions/chat";
+import { saveChatMessage } from "@/domains/ai-chat/functions/message";
 import {
   ChatRequestSchema,
   GeminiModelSchema,

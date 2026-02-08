@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { ChatProvider } from "@/domains/ai-chat/context/chat";
-import { getChatMessages } from "@/domains/ai-chat/functions/chat";
+import { getChatMessages } from "@/domains/ai-chat/functions/message";
 import { AISearchSchema } from "@/domains/ai-chat/types/schemas";
 import { Chat } from "@/domains/ai-chat/ui/chat";
 
