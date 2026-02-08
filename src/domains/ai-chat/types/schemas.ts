@@ -44,11 +44,6 @@ export const ChatBaseRequestSchema = z.object({
   chatId: z.string(),
 });
 
-export const GetUserChatsRequestSchema = z.object({
-  limit: z.number().min(1).max(50).default(15),
-  offset: z.number().min(0).default(0),
-});
-
 export const UpdateChatTitleRequestSchema = ChatBaseRequestSchema.extend({
   title: z.string().min(1).max(200),
 });
