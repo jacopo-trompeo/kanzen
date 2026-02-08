@@ -15,7 +15,6 @@ interface ChatContextValue {
 export function ChatProvider(props: PropsWithChildren<ChatContextValue>) {
   const { children, initialMessages, conversationId } = props;
   const { settings } = useAiChatSettings();
-  const conversationIdToUse = conversationId || crypto.randomUUID();
 
   const chat = useChat({
     initialMessages: initialMessages.map((m) => ({
@@ -29,7 +28,7 @@ export function ChatProvider(props: PropsWithChildren<ChatContextValue>) {
         apiKey: settings?.apiKey,
         systemPrompt: settings?.systemPrompt,
         model: settings?.model,
-        conversationId: conversationIdToUse,
+        conversationId,
       },
     }),
     onError: (error) => {
@@ -38,9 +37,7 @@ export function ChatProvider(props: PropsWithChildren<ChatContextValue>) {
   });
 
   return (
-    <ChatContext.Provider
-      value={{ ...chat, conversationId: conversationIdToUse }}
-    >
+    <ChatContext.Provider value={{ ...chat, conversationId }}>
       {children}
     </ChatContext.Provider>
   );
