@@ -1,7 +1,7 @@
 import type { MessagePart } from "@tanstack/ai";
 import { useChatContext } from "@/domains/ai-chat/context/chat";
 import { CopyMessageButton } from "@/domains/ai-chat/ui/copy-message-button";
-import { ReloadMessageButton } from "../reload-message-button";
+import { ReloadMessageButton } from "@/domains/ai-chat/ui/reload-message-button";
 
 interface MessageActionsProps {
   isFromUser: boolean;
