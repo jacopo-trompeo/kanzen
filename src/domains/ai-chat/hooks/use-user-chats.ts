@@ -15,7 +15,7 @@ export function useUserChats() {
         return allPages.reduce((acc, page) => acc + page.chats.length, 0);
       },
       initialPageParam: 0,
-      staleTime: 30000,
+      staleTime: Number.POSITIVE_INFINITY,
     });
 
   const chats = data?.pages.flatMap((page) => page.chats) ?? [];

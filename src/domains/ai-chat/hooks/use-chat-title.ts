@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { getChatFirstUserMessage } from "@/domains/ai-chat/functions/chat";
+import { getChatFirstUserMessage } from "@/domains/ai-chat/functions/message";
 import type { Chat } from "@/domains/ai-chat/types";
 
 export function useChatTitle(chat: Chat): string {
@@ -7,7 +7,7 @@ export function useChatTitle(chat: Chat): string {
     queryKey: ["chat-first-message", chat.id],
     queryFn: () => getChatFirstUserMessage({ data: { chatId: chat.id } }),
     enabled: !chat.title,
-    staleTime: 60000,
+    staleTime: Number.POSITIVE_INFINITY,
   });
 
   if (chat.title) {

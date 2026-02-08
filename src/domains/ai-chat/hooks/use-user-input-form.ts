@@ -6,12 +6,7 @@ type UserInputFields = {
   message: string;
 };
 
-interface UseUserInputFormOptions {
-  isFirstMessage?: boolean;
-}
-
-export function useUserInputForm(options: UseUserInputFormOptions) {
-  const { isFirstMessage = false } = options;
+export function useUserInputForm() {
   const { sendMessage, isLoading } = useChatContext();
   const queryClient = useQueryClient();
 
@@ -23,10 +18,8 @@ export function useUserInputForm(options: UseUserInputFormOptions) {
     defaultValues,
     onSubmit: async ({ value }) => {
       if (value.message.trim() && !isLoading) {
-        await sendMessage(value.message.trim());
-        if (isFirstMessage) {
-          queryClient.invalidateQueries({ queryKey: ["user-chats"] });
-        }
+        sendMessage(value.message.trim());
+        queryClient.invalidateQueries({ queryKey: ["user-chats"] });
       }
     },
   });
