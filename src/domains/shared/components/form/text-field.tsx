@@ -12,7 +12,7 @@ export function TextField({ children, ...rest }: TextFieldProps) {
 
   return (
     <Field>
-      <FieldLabel htmlFor={field.name}>{children}</FieldLabel>
+      {children && <FieldLabel htmlFor={field.name}>{children}</FieldLabel>}
       <Input
         id={field.name}
         value={field.state.value}

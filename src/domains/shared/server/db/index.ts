@@ -2,6 +2,7 @@ import { createServerOnlyFn } from "@tanstack/react-start";
 import { drizzle } from "drizzle-orm/node-postgres";
 import { env } from "@/env";
 import * as authSchema from "./schema/auth";
+import * as chatSchema from "./schema/chat";
 import * as relations from "./schema/relations";
 import * as settingsSchema from "./schema/settings";
 
@@ -10,6 +11,7 @@ const getDatabse = createServerOnlyFn(() =>
     casing: "snake_case",
     schema: {
       ...authSchema,
+      ...chatSchema,
       ...settingsSchema,
       ...relations,
     },

@@ -3,6 +3,7 @@ import { check, integer, pgTable, text } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import * as z from "zod";
 import { user } from "./auth";
+import { DEFAULT_SYSTEM_PROMPT } from "@/domains/ai-chat/types/constants";
 
 export const globalSettings = pgTable("global_settings", {
   userId: text("user_id")
@@ -53,4 +54,27 @@ export const TextHookerSettingsInsertSchema = createInsertSchema(
 
 export type TextHookerSettingsInsertType = z.infer<
   typeof TextHookerSettingsInsertSchema
+>;
+
+export const aiChatSettings = pgTable("ai_chat_settings", {
+  userId: text("user_id")
+    .primaryKey()
+    .references(() => user.id, { onDelete: "cascade" }),
+  apiKey: text("api_key"),
+  model: text("model"),
+  systemPrompt: text("system_prompt").default(DEFAULT_SYSTEM_PROMPT),
+});
+
+export type AiChatSettings = typeof aiChatSettings.$inferSelect;
+
+export const AiChatSettingsInsertSchema = createInsertSchema(aiChatSettings, {
+  apiKey: (schema) => schema.optional(),
+  model: (schema) => schema.optional(),
+  systemPrompt: (schema) => schema.optional(),
+})
+  .omit({ userId: true })
+  .partial();
+
+export type AiChatSettingsInsertType = z.infer<
+  typeof AiChatSettingsInsertSchema
 >;

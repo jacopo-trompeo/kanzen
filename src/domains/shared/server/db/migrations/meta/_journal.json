@@ -15,6 +15,41 @@
       "when": 1765106784858,
       "tag": "0001_create_settings_tables",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1768926746542,
+      "tag": "0002_create_ai_chat_settings_table",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1769544411950,
+      "tag": "0003_create_ai_chat_and_messages_tables",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1769875656832,
+      "tag": "0004_update_message_id_default_value",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1770473673347,
+      "tag": "0005_update_message_role_to_enum",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1770477315194,
+      "tag": "0006_update_system_prompt_default_value",
+      "breakpoints": true
     }
   ]
 }
