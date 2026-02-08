@@ -6,7 +6,7 @@ import {
   AiChatSettingsInsertSchema,
   aiChatSettings,
 } from "@/domains/shared/server/db/schema/settings";
-import { decrypt, encrypt } from "./encryption";
+import { decrypt, encrypt } from "@/domains/shared/utils/encryption";
 
 export const getAiChatSettings = createServerFn({ method: "GET" })
   .middleware([authMiddleware])
