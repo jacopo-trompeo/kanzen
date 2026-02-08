@@ -10,12 +10,13 @@ import { ChatSettings } from "./chat-settings";
 
 interface UserMessageInputProps {
   onSubmit: () => void;
+  isFirstMessage?: boolean;
 }
 
 export function UserMessageInput(props: UserMessageInputProps) {
-  const { onSubmit } = props;
+  const { onSubmit, isFirstMessage = false } = props;
   const { isLoading, conversationId } = useChatContext();
-  const form = useUserInputForm();
+  const form = useUserInputForm({ isFirstMessage });
   const navigate = useNavigate();
 
   return (
