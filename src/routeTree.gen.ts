@@ -21,7 +21,6 @@ import { Route as AppSettingsRouteImport } from './routes/_app/settings'
 import { Route as AppReaderRouteImport } from './routes/_app/reader'
 import { Route as AppGrammarRouteImport } from './routes/_app/grammar'
 import { Route as AppAiRouteImport } from './routes/_app/ai'
-import { Route as ApiRpcSplatRouteImport } from './routes/api/rpc/$'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 
 const AuthRouteRoute = AuthRouteRouteImport.update({
@@ -82,11 +81,6 @@ const AppAiRoute = AppAiRouteImport.update({
   path: '/ai',
   getParentRoute: () => AppRouteRoute,
 } as any)
-const ApiRpcSplatRoute = ApiRpcSplatRouteImport.update({
-  id: '/api/rpc/$',
-  path: '/api/rpc/$',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   id: '/api/auth/$',
   path: '/api/auth/$',
@@ -105,7 +99,6 @@ export interface FileRoutesByFullPath {
   '/api/chat': typeof ApiChatRoute
   '/': typeof AppIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
-  '/api/rpc/$': typeof ApiRpcSplatRoute
 }
 export interface FileRoutesByTo {
   '/ai': typeof AppAiRoute
@@ -119,7 +112,6 @@ export interface FileRoutesByTo {
   '/api/chat': typeof ApiChatRoute
   '/': typeof AppIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
-  '/api/rpc/$': typeof ApiRpcSplatRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -136,7 +128,6 @@ export interface FileRoutesById {
   '/api/chat': typeof ApiChatRoute
   '/_app/': typeof AppIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
-  '/api/rpc/$': typeof ApiRpcSplatRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -152,7 +143,6 @@ export interface FileRouteTypes {
     | '/api/chat'
     | '/'
     | '/api/auth/$'
-    | '/api/rpc/$'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/ai'
@@ -166,7 +156,6 @@ export interface FileRouteTypes {
     | '/api/chat'
     | '/'
     | '/api/auth/$'
-    | '/api/rpc/$'
   id:
     | '__root__'
     | '/_app'
@@ -182,7 +171,6 @@ export interface FileRouteTypes {
     | '/api/chat'
     | '/_app/'
     | '/api/auth/$'
-    | '/api/rpc/$'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -190,7 +178,6 @@ export interface RootRouteChildren {
   AuthRouteRoute: typeof AuthRouteRouteWithChildren
   ApiChatRoute: typeof ApiChatRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
-  ApiRpcSplatRoute: typeof ApiRpcSplatRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -279,13 +266,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppAiRouteImport
       parentRoute: typeof AppRouteRoute
     }
-    '/api/rpc/$': {
-      id: '/api/rpc/$'
-      path: '/api/rpc/$'
-      fullPath: '/api/rpc/$'
-      preLoaderRoute: typeof ApiRpcSplatRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/api/auth/$': {
       id: '/api/auth/$'
       path: '/api/auth/$'
@@ -339,7 +319,6 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRouteRoute: AuthRouteRouteWithChildren,
   ApiChatRoute: ApiChatRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
-  ApiRpcSplatRoute: ApiRpcSplatRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
