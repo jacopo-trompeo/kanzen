@@ -19,7 +19,7 @@ export function useUserInputForm() {
     defaultValues,
     onSubmit: async ({ value }) => {
       if (value.message.trim() && !isLoading) {
-        sendMessage(value.message.trim());
+        await sendMessage(value.message.trim());
         queryClient.invalidateQueries({ queryKey: [USER_CHATS_KEY] });
       }
     },

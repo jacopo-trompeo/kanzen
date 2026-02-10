@@ -17,7 +17,8 @@ interface ChatItemProps {
 export function ChatItem(props: ChatItemProps) {
   const { chat } = props;
   const [isRenaming, setIsRenaming] = useState(false);
-  const { conversationId } = useSearch({ from: Route.id });
+  const { conversationId } =
+    useSearch({ from: Route.id, shouldThrow: false }) ?? {};
   const title = useChatTitle(chat);
   const isActive = conversationId === chat.id;
 
