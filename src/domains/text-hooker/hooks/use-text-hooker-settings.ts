@@ -8,11 +8,10 @@ import {
   getTextHookerSettings,
   updateTextHookerSettings,
 } from "@/domains/text-hooker/functions/settings";
-
-const QUERY_KEY = ["text-hooker-settings"];
+import { TEXT_HOOKER_SETTINGS_KEY } from "@/domains/text-hooker/lib/query-keys";
 
 export const settingsQueryOptions = queryOptions({
-  queryKey: QUERY_KEY,
+  queryKey: [TEXT_HOOKER_SETTINGS_KEY],
   queryFn: () => getTextHookerSettings(),
   staleTime: Number.POSITIVE_INFINITY,
 });
@@ -21,7 +20,7 @@ export function useTextHookerSettings() {
   const { data: settings } = useSuspenseQuery(settingsQueryOptions);
 
   const updateSettings = useOptimisticUpdate({
-    queryKey: QUERY_KEY,
+    queryKey: [TEXT_HOOKER_SETTINGS_KEY],
     mutationFn: async (newSettings: TextHookerSettingsInsertType) => {
       await updateTextHookerSettings({ data: newSettings });
     },

@@ -22,10 +22,10 @@ function TextHookerShell() {
   useClipboardInserterMonitor();
 
   return (
-    <main className="relative w-full">
+    <div className="relative w-full">
       <TextLogList />
       <LogListToolbar className="fixed right-10 bottom-5" />
-    </main>
+    </div>
   );
 }
 
