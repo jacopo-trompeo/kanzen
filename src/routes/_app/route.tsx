@@ -30,7 +30,9 @@ function Layout() {
     <SidebarProvider defaultOpen={sidebarOpen}>
       <AppSidebar />
       <SidebarTrigger />
-      <Outlet />
+      <main className="w-full">
+        <Outlet />
+      </main>
     </SidebarProvider>
   );
 }
