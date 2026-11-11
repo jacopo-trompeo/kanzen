@@ -12,7 +12,7 @@ export function FormFooter(props: FormFooterProps) {
   const { linkTo, text, linkText, children } = props;
 
   return (
-    <div className="mt-5 flex flex-col gap-5 text-muted-foreground text-sm">
+    <div className="text-muted-foreground mt-5 flex flex-col gap-5 text-sm">
       <div>
         {text}{" "}
         <Link

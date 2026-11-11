@@ -17,7 +17,7 @@ export function Chat() {
       {hasMessages ? (
         <>
           <ChatMessageList scrollContainerRef={scrollContainerRef} />
-          <div className="border-t bg-background py-4">
+          <div className="bg-background border-t py-4">
             <UserMessageInput onSubmit={scrollToBottom} />
           </div>
         </>

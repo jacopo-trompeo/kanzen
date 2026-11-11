@@ -15,7 +15,7 @@ export function LogListToolbar(props: LogListToolbarProps) {
     <div
       {...rest}
       className={cn(
-        "flex items-center gap-4 rounded border bg-primary-foreground px-10 py-5",
+        "bg-primary-foreground flex items-center gap-4 rounded border px-10 py-5",
         className,
       )}
     >
