@@ -19,7 +19,7 @@ export const getTextHookerSettings = createServerFn({ method: "GET" })
 
 export const updateTextHookerSettings = createServerFn({ method: "POST" })
   .middleware([authMiddleware])
-  .inputValidator(TextHookerSettingsInsertSchema)
+  .validator(TextHookerSettingsInsertSchema)
   .handler(async ({ context, data }) => {
     await db
       .update(textHookerSettings)

@@ -11,7 +11,7 @@ import { PaginatedRequestSchema } from "@/domains/shared/types/schemas";
 
 export const getUserChats = createServerFn({ method: "GET" })
   .middleware([authMiddleware])
-  .inputValidator(PaginatedRequestSchema)
+  .validator(PaginatedRequestSchema)
   .handler(async ({ data, context }) => {
     const userId = context.session.user.id;
     const chats = await db.query.chat.findMany({
@@ -28,7 +28,7 @@ export const getUserChats = createServerFn({ method: "GET" })
 
 export const updateChatTitle = createServerFn({ method: "POST" })
   .middleware([authMiddleware])
-  .inputValidator(UpdateChatTitleRequestSchema)
+  .validator(UpdateChatTitleRequestSchema)
   .handler(async ({ data, context }) => {
     const userId = context.session.user.id;
 
@@ -40,7 +40,7 @@ export const updateChatTitle = createServerFn({ method: "POST" })
 
 export const deleteChat = createServerFn({ method: "POST" })
   .middleware([authMiddleware])
-  .inputValidator(ChatBaseRequestSchema)
+  .validator(ChatBaseRequestSchema)
   .handler(async ({ data, context }) => {
     const userId = context.session.user.id;
 

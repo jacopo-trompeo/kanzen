@@ -33,7 +33,7 @@ export function ChatItem(props: ChatItemProps) {
   return (
     <SidebarMenuSubItem>
       <SidebarMenuSubButton asChild isActive={isActive}>
-        <Link to={`/ai?conversationId=${chat.id}`}>
+        <Link to="/ai" search={{ conversationId: chat.id }}>
           <span className="text-muted-foreground">{title}</span>
         </Link>
       </SidebarMenuSubButton>

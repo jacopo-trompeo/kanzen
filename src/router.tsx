@@ -1,4 +1,4 @@
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClient } from "@tanstack/react-query";
 import { createRouter } from "@tanstack/react-router";
 import { setupRouterSsrQueryIntegration } from "@tanstack/react-router-ssr-query";
 import { routeTree } from "./routeTree.gen";
@@ -22,14 +22,11 @@ export function getRouter() {
     context: { queryClient },
     defaultPendingComponent: () => <div>Loading...</div>,
     defaultNotFoundComponent: () => <div>Not Found</div>,
-    defaultErrorComponent: ({ error }) => <div>Error: {error.message}</div>,
-    Wrap: (props: { children: React.ReactNode }) => {
-      return (
-        <QueryClientProvider client={queryClient}>
-          {props.children}
-        </QueryClientProvider>
-      );
-    },
+    defaultErrorComponent: ({ error }) => (
+      <div>
+        Error: {error instanceof Error ? error.message : "Unknown error"}
+      </div>
+    ),
   });
 
   setupRouterSsrQueryIntegration({

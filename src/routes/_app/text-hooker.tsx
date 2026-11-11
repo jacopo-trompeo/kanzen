@@ -13,8 +13,11 @@ import { LogListToolbar } from "@/domains/text-hooker/ui/toolbar/log-list-toolba
 export const Route = createFileRoute("/_app/text-hooker")({
   component: TextHookerPage,
   pendingComponent: () => <LogPendingPlaceholder />,
-  loader: ({ context }) => {
-    context.queryClient.ensureQueryData(settingsQueryOptions);
+  loader: async ({ context }) => {
+    await context.queryClient.query({
+      ...settingsQueryOptions,
+      staleTime: "static",
+    });
   },
 });
 

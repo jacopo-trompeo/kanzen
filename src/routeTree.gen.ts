@@ -9,26 +9,26 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as AuthRouteRouteImport } from './routes/_auth/route'
 import { Route as AppRouteRouteImport } from './routes/_app/route'
+import { Route as AuthRouteRouteImport } from './routes/_auth/route'
 import { Route as AppIndexRouteImport } from './routes/_app/index'
-import { Route as ApiChatRouteImport } from './routes/api/chat'
-import { Route as AuthSignUpRouteImport } from './routes/_auth/sign-up'
-import { Route as AuthSignInRouteImport } from './routes/_auth/sign-in'
-import { Route as AppVideoPlayerRouteImport } from './routes/_app/video-player'
-import { Route as AppTextHookerRouteImport } from './routes/_app/text-hooker'
-import { Route as AppSettingsRouteImport } from './routes/_app/settings'
-import { Route as AppReaderRouteImport } from './routes/_app/reader'
-import { Route as AppGrammarRouteImport } from './routes/_app/grammar'
 import { Route as AppAiRouteImport } from './routes/_app/ai'
+import { Route as AppGrammarRouteImport } from './routes/_app/grammar'
+import { Route as AppReaderRouteImport } from './routes/_app/reader'
+import { Route as AppSettingsRouteImport } from './routes/_app/settings'
+import { Route as AppTextHookerRouteImport } from './routes/_app/text-hooker'
+import { Route as AppVideoPlayerRouteImport } from './routes/_app/video-player'
+import { Route as AuthSignInRouteImport } from './routes/_auth/sign-in'
+import { Route as AuthSignUpRouteImport } from './routes/_auth/sign-up'
+import { Route as ApiChatRouteImport } from './routes/api/chat'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 
-const AuthRouteRoute = AuthRouteRouteImport.update({
-  id: '/_auth',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const AppRouteRoute = AppRouteRouteImport.update({
   id: '/_app',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRouteRoute = AuthRouteRouteImport.update({
+  id: '/_auth',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AppIndexRoute = AppIndexRouteImport.update({
@@ -36,39 +36,9 @@ const AppIndexRoute = AppIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AppRouteRoute,
 } as any)
-const ApiChatRoute = ApiChatRouteImport.update({
-  id: '/api/chat',
-  path: '/api/chat',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AuthSignUpRoute = AuthSignUpRouteImport.update({
-  id: '/sign-up',
-  path: '/sign-up',
-  getParentRoute: () => AuthRouteRoute,
-} as any)
-const AuthSignInRoute = AuthSignInRouteImport.update({
-  id: '/sign-in',
-  path: '/sign-in',
-  getParentRoute: () => AuthRouteRoute,
-} as any)
-const AppVideoPlayerRoute = AppVideoPlayerRouteImport.update({
-  id: '/video-player',
-  path: '/video-player',
-  getParentRoute: () => AppRouteRoute,
-} as any)
-const AppTextHookerRoute = AppTextHookerRouteImport.update({
-  id: '/text-hooker',
-  path: '/text-hooker',
-  getParentRoute: () => AppRouteRoute,
-} as any)
-const AppSettingsRoute = AppSettingsRouteImport.update({
-  id: '/settings',
-  path: '/settings',
-  getParentRoute: () => AppRouteRoute,
-} as any)
-const AppReaderRoute = AppReaderRouteImport.update({
-  id: '/reader',
-  path: '/reader',
+const AppAiRoute = AppAiRouteImport.update({
+  id: '/ai',
+  path: '/ai',
   getParentRoute: () => AppRouteRoute,
 } as any)
 const AppGrammarRoute = AppGrammarRouteImport.update({
@@ -76,10 +46,40 @@ const AppGrammarRoute = AppGrammarRouteImport.update({
   path: '/grammar',
   getParentRoute: () => AppRouteRoute,
 } as any)
-const AppAiRoute = AppAiRouteImport.update({
-  id: '/ai',
-  path: '/ai',
+const AppReaderRoute = AppReaderRouteImport.update({
+  id: '/reader',
+  path: '/reader',
   getParentRoute: () => AppRouteRoute,
+} as any)
+const AppSettingsRoute = AppSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => AppRouteRoute,
+} as any)
+const AppTextHookerRoute = AppTextHookerRouteImport.update({
+  id: '/text-hooker',
+  path: '/text-hooker',
+  getParentRoute: () => AppRouteRoute,
+} as any)
+const AppVideoPlayerRoute = AppVideoPlayerRouteImport.update({
+  id: '/video-player',
+  path: '/video-player',
+  getParentRoute: () => AppRouteRoute,
+} as any)
+const AuthSignInRoute = AuthSignInRouteImport.update({
+  id: '/sign-in',
+  path: '/sign-in',
+  getParentRoute: () => AuthRouteRoute,
+} as any)
+const AuthSignUpRoute = AuthSignUpRouteImport.update({
+  id: '/sign-up',
+  path: '/sign-up',
+  getParentRoute: () => AuthRouteRoute,
+} as any)
+const ApiChatRoute = ApiChatRouteImport.update({
+  id: '/api/chat',
+  path: '/api/chat',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   id: '/api/auth/$',
@@ -88,6 +88,7 @@ const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
 } as any)
 
 export interface FileRoutesByFullPath {
+  '/': typeof AppIndexRoute
   '/ai': typeof AppAiRoute
   '/grammar': typeof AppGrammarRoute
   '/reader': typeof AppReaderRoute
@@ -97,10 +98,10 @@ export interface FileRoutesByFullPath {
   '/sign-in': typeof AuthSignInRoute
   '/sign-up': typeof AuthSignUpRoute
   '/api/chat': typeof ApiChatRoute
-  '/': typeof AppIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
 }
 export interface FileRoutesByTo {
+  '/': typeof AppIndexRoute
   '/ai': typeof AppAiRoute
   '/grammar': typeof AppGrammarRoute
   '/reader': typeof AppReaderRoute
@@ -110,7 +111,6 @@ export interface FileRoutesByTo {
   '/sign-in': typeof AuthSignInRoute
   '/sign-up': typeof AuthSignUpRoute
   '/api/chat': typeof ApiChatRoute
-  '/': typeof AppIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
 }
 export interface FileRoutesById {
@@ -132,6 +132,7 @@ export interface FileRoutesById {
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
+    | '/'
     | '/ai'
     | '/grammar'
     | '/reader'
@@ -141,10 +142,10 @@ export interface FileRouteTypes {
     | '/sign-in'
     | '/sign-up'
     | '/api/chat'
-    | '/'
     | '/api/auth/$'
   fileRoutesByTo: FileRoutesByTo
   to:
+    | '/'
     | '/ai'
     | '/grammar'
     | '/reader'
@@ -154,7 +155,6 @@ export interface FileRouteTypes {
     | '/sign-in'
     | '/sign-up'
     | '/api/chat'
-    | '/'
     | '/api/auth/$'
   id:
     | '__root__'
@@ -182,18 +182,18 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/_auth': {
-      id: '/_auth'
-      path: ''
-      fullPath: ''
-      preLoaderRoute: typeof AuthRouteRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/_app': {
       id: '/_app'
       path: ''
-      fullPath: ''
+      fullPath: '/'
       preLoaderRoute: typeof AppRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_auth': {
+      id: '/_auth'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_app/': {
@@ -203,53 +203,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppIndexRouteImport
       parentRoute: typeof AppRouteRoute
     }
-    '/api/chat': {
-      id: '/api/chat'
-      path: '/api/chat'
-      fullPath: '/api/chat'
-      preLoaderRoute: typeof ApiChatRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/_auth/sign-up': {
-      id: '/_auth/sign-up'
-      path: '/sign-up'
-      fullPath: '/sign-up'
-      preLoaderRoute: typeof AuthSignUpRouteImport
-      parentRoute: typeof AuthRouteRoute
-    }
-    '/_auth/sign-in': {
-      id: '/_auth/sign-in'
-      path: '/sign-in'
-      fullPath: '/sign-in'
-      preLoaderRoute: typeof AuthSignInRouteImport
-      parentRoute: typeof AuthRouteRoute
-    }
-    '/_app/video-player': {
-      id: '/_app/video-player'
-      path: '/video-player'
-      fullPath: '/video-player'
-      preLoaderRoute: typeof AppVideoPlayerRouteImport
-      parentRoute: typeof AppRouteRoute
-    }
-    '/_app/text-hooker': {
-      id: '/_app/text-hooker'
-      path: '/text-hooker'
-      fullPath: '/text-hooker'
-      preLoaderRoute: typeof AppTextHookerRouteImport
-      parentRoute: typeof AppRouteRoute
-    }
-    '/_app/settings': {
-      id: '/_app/settings'
-      path: '/settings'
-      fullPath: '/settings'
-      preLoaderRoute: typeof AppSettingsRouteImport
-      parentRoute: typeof AppRouteRoute
-    }
-    '/_app/reader': {
-      id: '/_app/reader'
-      path: '/reader'
-      fullPath: '/reader'
-      preLoaderRoute: typeof AppReaderRouteImport
+    '/_app/ai': {
+      id: '/_app/ai'
+      path: '/ai'
+      fullPath: '/ai'
+      preLoaderRoute: typeof AppAiRouteImport
       parentRoute: typeof AppRouteRoute
     }
     '/_app/grammar': {
@@ -259,12 +217,54 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppGrammarRouteImport
       parentRoute: typeof AppRouteRoute
     }
-    '/_app/ai': {
-      id: '/_app/ai'
-      path: '/ai'
-      fullPath: '/ai'
-      preLoaderRoute: typeof AppAiRouteImport
+    '/_app/reader': {
+      id: '/_app/reader'
+      path: '/reader'
+      fullPath: '/reader'
+      preLoaderRoute: typeof AppReaderRouteImport
       parentRoute: typeof AppRouteRoute
+    }
+    '/_app/settings': {
+      id: '/_app/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof AppSettingsRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
+    '/_app/text-hooker': {
+      id: '/_app/text-hooker'
+      path: '/text-hooker'
+      fullPath: '/text-hooker'
+      preLoaderRoute: typeof AppTextHookerRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
+    '/_app/video-player': {
+      id: '/_app/video-player'
+      path: '/video-player'
+      fullPath: '/video-player'
+      preLoaderRoute: typeof AppVideoPlayerRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
+    '/_auth/sign-in': {
+      id: '/_auth/sign-in'
+      path: '/sign-in'
+      fullPath: '/sign-in'
+      preLoaderRoute: typeof AuthSignInRouteImport
+      parentRoute: typeof AuthRouteRoute
+    }
+    '/_auth/sign-up': {
+      id: '/_auth/sign-up'
+      path: '/sign-up'
+      fullPath: '/sign-up'
+      preLoaderRoute: typeof AuthSignUpRouteImport
+      parentRoute: typeof AuthRouteRoute
+    }
+    '/api/chat': {
+      id: '/api/chat'
+      path: '/api/chat'
+      fullPath: '/api/chat'
+      preLoaderRoute: typeof ApiChatRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/api/auth/$': {
       id: '/api/auth/$'
