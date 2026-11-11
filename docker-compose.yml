@@ -1,14 +1,14 @@
 services:
   db:
-    image: postgres:latest
+    image: postgres:18
     container_name: kanzen_db
     shm_size: 128mb
     ports:
-      - '5432:5432'
+      - "5432:5432"
     env_file:
       - .env
     volumes:
-      - kanzen_data:/var/lib/postgresql/data
+      - kanzen_data:/var/lib/postgresql
 
 volumes:
   kanzen_data:
