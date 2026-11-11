@@ -22,18 +22,13 @@ export const ModelSchema = z.union([
 
 export type Model = z.infer<typeof ModelSchema>;
 
-export const ChatRequestSchema = z.object({
-  messages: z.array(
-    z.object({
-      role: MessageRoleSchema,
-      content: z.string(),
-    }),
-  ),
+export const ChatForwardedPropsSchema = z.object({
   apiKey: z.string().min(1),
-  conversationId: z.string(),
   systemPrompt: z.string().optional(),
   model: ModelSchema,
 });
+
+export type ChatForwardedProps = z.infer<typeof ChatForwardedPropsSchema>;
 
 export const MessageInsertSchema = createInsertSchema(message, {
   role: MessageRoleSchema,

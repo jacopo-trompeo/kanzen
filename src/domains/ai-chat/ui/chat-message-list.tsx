@@ -16,7 +16,7 @@ export function ChatMessageList(props: ChatMessageListProps) {
   return (
     <div
       ref={scrollContainerRef}
-      className="flex-1 overflow-y-auto [scrollbar-gutter:stable]"
+      className="flex-1 scrollbar-gutter-stable overflow-y-auto"
     >
       <div className="mx-auto flex w-4xl flex-col gap-5 py-8">
         {messages.map((message) => (

@@ -8,7 +8,7 @@ export function ErrorMessages({
       {errors.map((error) => (
         <span
           key={typeof error === "string" ? error : error.message}
-          className="text-red-500 text-sm"
+          className="text-sm text-red-500"
         >
           {typeof error === "string" ? error : error.message}
         </span>

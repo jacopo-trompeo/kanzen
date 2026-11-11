@@ -1,5 +1,5 @@
 {
-  "$schema": "https://biomejs.dev/schemas/2.3.0/schema.json",
+  "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
   "vcs": {
     "enabled": false,
     "clientKind": "git",
@@ -12,6 +12,11 @@
       "!node_modules",
       "!.tanstack",
       "!.husky",
+      "!dist",
+      "!.direnv",
+      "!.ai",
+      "!AGENTS.md",
+      "!.claude",
       "!src/routeTree.gen.ts"
     ]
   },
@@ -23,18 +28,15 @@
   "linter": {
     "enabled": true,
     "rules": {
-      "recommended": true,
+      "preset": "recommended",
       "correctness": {
         "noChildrenProp": "off",
         "useExhaustiveDependencies": "info"
       },
       "nursery": {
-        "useSortedClasses": {
+        "useTailwindSortedClasses": {
           "level": "warn",
-          "fix": "safe",
-          "options": {
-            "functions": ["clsx", "cva", "cn"]
-          }
+          "fix": "safe"
         }
       },
       "style": {
@@ -63,5 +65,6 @@
         "organizeImports": "on"
       }
     }
-  }
+  },
+  "tailwind": { "mergeFunctions": ["clsx", "cn"], "variantFunctions": ["cva"] }
 }

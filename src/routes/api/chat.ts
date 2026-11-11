@@ -1,21 +1,39 @@
 import {
   chat,
+  chatParamsFromRequestBody,
+  EventType,
+  type ModelMessage,
   type StreamChunk,
   toServerSentEventsResponse,
+  type UIMessage,
 } from "@tanstack/ai";
 import { GeminiTextAdapter } from "@tanstack/ai-gemini";
 import { GrokTextAdapter } from "@tanstack/ai-grok";
 import { OpenAITextAdapter } from "@tanstack/ai-openai";
 import { createFileRoute } from "@tanstack/react-router";
+import * as z from "zod";
 import { saveChatMessage } from "@/domains/ai-chat/functions/message";
 import {
-  ChatRequestSchema,
+  type ChatForwardedProps,
+  ChatForwardedPropsSchema,
   GeminiModelSchema,
   GrokModelSchema,
   type Model,
   OpenAIModelSchema,
 } from "@/domains/ai-chat/types/schemas";
 import { isZodEnum } from "@/domains/shared/helpers/zod";
+
+type WireMessage = UIMessage | ModelMessage;
+
+type ParsedChatRequest =
+  | {
+      ok: true;
+      messages: Array<WireMessage>;
+      threadId: string;
+      userText: string;
+      props: ChatForwardedProps;
+    }
+  | { ok: false; error: string };
 
 function createAdapter(model: Model, apiKey: string) {
   if (isZodEnum(OpenAIModelSchema, model)) {
@@ -33,81 +51,128 @@ function createAdapter(model: Model, apiKey: string) {
   throw new Error(`Unsupported model: ${model}`);
 }
 
-function saveResponseToDatabase(
-  streamChunk: AsyncIterable<StreamChunk>,
-  conversationId: string,
+function textOf(message: WireMessage): string {
+  if ("parts" in message) {
+    return message.parts
+      .flatMap((part) => (part.type === "text" ? [part.content] : []))
+      .join("");
+  }
+
+  if (message.content === null) {
+    return "";
+  }
+
+  if (typeof message.content === "string") {
+    return message.content;
+  }
+
+  return message.content
+    .flatMap((part) => (part.type === "text" ? [part.content] : []))
+    .join("");
+}
+
+async function parseChatRequest(body: unknown): Promise<ParsedChatRequest> {
+  let params: Awaited<ReturnType<typeof chatParamsFromRequestBody>>;
+  try {
+    params = await chatParamsFromRequestBody(body);
+  } catch (error) {
+    return {
+      ok: false,
+      error: error instanceof Error ? error.message : "Invalid chat request",
+    };
+  }
+
+  const props = ChatForwardedPropsSchema.safeParse(params.forwardedProps);
+  if (!props.success) {
+    return { ok: false, error: z.prettifyError(props.error) };
+  }
+
+  const lastMessage = params.messages.at(-1);
+  if (lastMessage?.role !== "user") {
+    return { ok: false, error: "The last message must be a user message" };
+  }
+
+  const userText = textOf(lastMessage);
+  if (!userText) {
+    return { ok: false, error: "The user message has no text content" };
+  }
+
+  return {
+    ok: true,
+    messages: params.messages,
+    threadId: params.threadId,
+    userText,
+    props: props.data,
+  };
+}
+
+async function* persistAssistantReply(
+  stream: AsyncIterable<StreamChunk>,
+  chatId: string,
 ) {
-  let responseContent = "";
-  const wrappedStream = async function* () {
-    try {
-      for await (const event of streamChunk) {
-        if (event.type === "content") {
-          if (!event.content.startsWith(responseContent)) {
-            responseContent = event.content;
-          } else {
-            responseContent += event.content;
-          }
-        }
-        yield event;
+  let reply = "";
+  try {
+    for await (const chunk of stream) {
+      if (chunk.type === EventType.TEXT_MESSAGE_CONTENT) {
+        reply += chunk.delta;
       }
-    } finally {
-      if (responseContent) {
-        await saveChatMessage({
-          data: {
-            chatId: conversationId,
-            role: "assistant",
-            content: responseContent,
-          },
+      if (chunk.type === EventType.RUN_ERROR) {
+        console.error("[api/chat] provider run error", {
+          chatId,
+          code: chunk.code,
+          message: chunk.message,
         });
       }
+      yield chunk;
     }
-  };
+  } finally {
+    if (reply) {
+      await saveChatMessage({
+        data: { chatId, role: "assistant", content: reply },
+      });
+    }
+  }
+}
 
-  return wrappedStream();
+function jsonError(status: number, message: string) {
+  return Response.json({ error: message }, { status });
 }
 
 export const Route = createFileRoute("/api/chat")({
   server: {
     handlers: {
       POST: async ({ request }) => {
-        const json = await request.json();
-        const { messages, conversationId, systemPrompt, apiKey, model } =
-          await ChatRequestSchema.parseAsync(json);
+        let body: unknown;
+        try {
+          body = await request.json();
+        } catch {
+          return jsonError(400, "Request body must be valid JSON");
+        }
 
-        const userMessage = messages[messages.length - 1];
+        const parsed = await parseChatRequest(body);
+        if (!parsed.ok) {
+          return jsonError(400, parsed.error);
+        }
+
+        const { messages, threadId, userText, props } = parsed;
+
         await saveChatMessage({
-          data: {
-            chatId: conversationId,
-            role: userMessage.role,
-            content: userMessage.content,
-          },
+          data: { chatId: threadId, role: "user", content: userText },
         });
 
-        try {
-          const adapter = createAdapter(model, apiKey);
+        const abortController = new AbortController();
+        const stream = chat({
+          adapter: createAdapter(props.model, props.apiKey),
+          messages,
+          threadId,
+          systemPrompts: props.systemPrompt ? [props.systemPrompt] : undefined,
+          abortController,
+        });
 
-          const streamResult = (await chat({
-            adapter,
-            messages,
-            systemPrompts: systemPrompt ? [systemPrompt] : undefined,
-            conversationId,
-          })) as AsyncIterable<StreamChunk>;
-
-          return toServerSentEventsResponse(
-            saveResponseToDatabase(streamResult, conversationId),
-          );
-        } catch (error) {
-          return new Response(
-            JSON.stringify({
-              error:
-                error instanceof Error ? error.message : "An error occurred",
-            }),
-            {
-              status: 500,
-              headers: { "Content-Type": "application/json" },
-            },
-          );
-        }
+        return toServerSentEventsResponse(
+          persistAssistantReply(stream, threadId),
+          { abortController },
+        );
       },
     },
   },

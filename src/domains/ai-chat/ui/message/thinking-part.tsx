@@ -6,8 +6,8 @@ export function ThinkingPart(props: ThinkingPartProps) {
   const { content } = props;
 
   return (
-    <div className="border-primary border-l-2 pl-2 text-muted-foreground/80 text-xs italic">
-      <span className="font-semibold text-primary/80 text-xs uppercase tracking-wider">
+    <div className="border-primary text-muted-foreground/80 border-l-2 pl-2 text-xs italic">
+      <span className="text-primary/80 text-xs font-semibold tracking-wider uppercase">
         Thinking...
       </span>
       <p>{content}</p>

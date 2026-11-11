@@ -29,7 +29,7 @@ export const getAiChatSettings = createServerFn({ method: "GET" })
 
 export const updateAiChatSettings = createServerFn({ method: "POST" })
   .middleware([authMiddleware])
-  .inputValidator(AiChatSettingsInsertSchema)
+  .validator(AiChatSettingsInsertSchema)
   .handler(async ({ context, data }) => {
     const userId = context.session.user.id;
 

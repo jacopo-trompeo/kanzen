@@ -9,7 +9,7 @@ import { chat, message } from "@/domains/shared/server/db/schema/chat";
 
 export const getChatMessages = createServerFn({ method: "GET" })
   .middleware([authMiddleware])
-  .inputValidator(ChatBaseRequestSchema)
+  .validator(ChatBaseRequestSchema)
   .handler(async ({ data, context }) => {
     const userId = context.session.user.id;
 
@@ -30,7 +30,7 @@ export const getChatMessages = createServerFn({ method: "GET" })
 
 export const getChatFirstUserMessage = createServerFn({ method: "GET" })
   .middleware([authMiddleware])
-  .inputValidator(ChatBaseRequestSchema)
+  .validator(ChatBaseRequestSchema)
   .handler(async ({ data, context }) => {
     const userId = context.session.user.id;
 
@@ -51,7 +51,7 @@ export const getChatFirstUserMessage = createServerFn({ method: "GET" })
 
 export const saveChatMessage = createServerFn({ method: "POST" })
   .middleware([authMiddleware])
-  .inputValidator(MessageInsertSchema)
+  .validator(MessageInsertSchema)
   .handler(async ({ data, context }) => {
     const userId = context.session.user.id;
 

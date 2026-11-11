@@ -49,70 +49,69 @@ API route handler that streams Server-Sent Events to the client.
 ### Done
 
 - [x] **Email/password authentication** via better-auth, with sign-in, sign-up,
-  session management, and an auth middleware that protects server functions
+      session management, and an auth middleware that protects server functions
 - [x] **AI chat tutor** with multi-provider support (OpenAI, Gemini, Grok). Answers stream
-  via SSE. Chat history is persisted to Postgres with infinite-scroll listing,
-  inline rename, and delete
+      via SSE. Chat history is persisted to Postgres with infinite-scroll listing,
+      inline rename, and delete
 - [x] **Text hooker** for capturing Japanese text from external applications
-  (visual novels, games, browsers). Connects via WebSocket and falls back to
-  clipboard monitoring when not connected. Includes a log viewer with
-  clear/undo, configurable font size, and configurable WebSocket URL
+      (visual novels, games, browsers). Connects via WebSocket and falls back to
+      clipboard monitoring when not connected. Includes a log viewer with
+      clear/undo, configurable font size, and configurable WebSocket URL
 - [x] **Sidebar navigation** with links to all sections and a collapsible AI
-  chat submenu showing conversation history
+      chat submenu showing conversation history
 - [x] **API key encryption** at rest (AES-256-GCM) for AI provider keys
 - [x] **Per-feature settings**: AI chat (model, system prompt, API key), text
-  hooker (font size, WebSocket URL), reader (theme, font size, view mode,
-  writing mode)
+      hooker (font size, WebSocket URL), reader (theme, font size, view mode,
+      writing mode)
 
 ### Doing
 
-- [ ] **Dictionary lookup** using resources like jmdict, kanjiVG and others to show word translations with readings, pitch accent graphs, and kanji stroke order animations 
+- [ ] **Dictionary lookup** using resources like jmdict, kanjiVG and others to show word translations with readings, pitch accent graphs, and kanji stroke order animations
 
 ### To Do
 
 - [ ] **EPUB reader** with a library for uploading and managing books. The
-  reader supports light/dark/sepia themes, font size adjustment, horizontal
-  and vertical writing modes, paginated and continuous view modes, table of
-  contents navigation, and persistent reading positions
+      reader supports light/dark/sepia themes, font size adjustment, horizontal
+      and vertical writing modes, paginated and continuous view modes, table of
+      contents navigation, and persistent reading positions
 - [ ] **Popup dictionary**: tap or hover a word in the reader for inline
-  definitions
+      definitions
 - [ ] **Video player**: a video player where the user can upload a video file and a subtitle file. The subtitles are shown on a sidebar and are synced with the video progress. The user can interact with the subtitles while watching the video
 - [ ] **Global settings page**: the `/settings` route is a stub. Per-feature
-  settings are accessible from within each feature but there is no unified
-  settings screen
+      settings are accessible from within each feature but there is no unified
+      settings screen
 - [ ] **Light/dark theme toggle**: the database has a `global_settings` table
-  with a `theme` field, but no UI control exists yet
+      with a `theme` field, but no UI control exists yet
 - [ ] **Mobile mode**: the app has a `useIsMobile` hook and the sidebar
-  component supports mobile, but no mobile layout has been designed or tested
+      component supports mobile, but no mobile layout has been designed or tested
 - [ ] **Guest mode**: no unauthenticated access to features exists
 - [ ] **Tests**: no test runner is configured
 - [ ] **CI/CD**: no GitHub Actions workflows exist
 
-
 ## Tech Stack
 
-| Technology | Role | Notes |
-|---|---|---|
-| TypeScript 5.x | Language | |
-| Bun 1.3+ | Runtime / build / package manager |  |
-| TanStack Start 1.x | SSR framework |  |
-| TanStack Router | Routing |  |
-| React 19 | UI | With React Compiler for automatic memoization |
-| Tailwind CSS 4 | Styling |  |
-| shadcn/ui | Components | New York style, neutral base, copied into source |
-| TanStack Form | Forms | With Zod validation adapter |
-| TanStack Query | Data fetching | SSR integration, infinite queries for chat list |
-| TanStack AI | LLM integration | OpenAI/Gemini/Grok adapters, SSE streaming |
-| Postgres | Server database |  |
-| Drizzle ORM | Database layer |  |
-| IndexedDB + Dexie | Client database | EPUB books, reading positions, text hooker logs |
-| better-auth 1.x | Authentication | Email/password with Drizzle adapter |
-| epubjs | EPUB rendering | Client-side book parsing and rendition |
-| react-markdown | Markdown | Renders AI response content |
-| Zod | Validation | Runtime schema validation on server and client |
-| WebSocket (native) | Text capture | Real-time text streaming from external tools |
-| Docker Compose | Infrastructure | Postgres container for local development |
-| Biome  | Linting & formatting | |
+| Technology         | Role                              | Notes                                            |
+| ------------------ | --------------------------------- | ------------------------------------------------ |
+| TypeScript 7.x     | Language                          |                                                  |
+| Bun 1.3+           | Runtime / build / package manager |                                                  |
+| TanStack Start 1.x | SSR framework                     |                                                  |
+| TanStack Router    | Routing                           |                                                  |
+| React 19           | UI                                | With React Compiler for automatic memoization    |
+| Tailwind CSS 4     | Styling                           |                                                  |
+| shadcn/ui          | Components                        | New York style, neutral base, copied into source |
+| TanStack Form      | Forms                             | With Zod validation adapter                      |
+| TanStack Query     | Data fetching                     | SSR integration, infinite queries for chat list  |
+| TanStack AI        | LLM integration                   | OpenAI/Gemini/Grok adapters, SSE streaming       |
+| Postgres           | Server database                   |                                                  |
+| Drizzle ORM        | Database layer                    |                                                  |
+| IndexedDB + Dexie  | Client database                   | EPUB books, reading positions, text hooker logs  |
+| better-auth 1.x    | Authentication                    | Email/password with Drizzle adapter              |
+| epubjs             | EPUB rendering                    | Client-side book parsing and rendition           |
+| react-markdown     | Markdown                          | Renders AI response content                      |
+| Zod                | Validation                        | Runtime schema validation on server and client   |
+| WebSocket (native) | Text capture                      | Real-time text streaming from external tools     |
+| Docker Compose     | Infrastructure                    | Postgres container for local development         |
+| Biome              | Linting & formatting              |                                                  |
 
 ## Install & Run
 
