@@ -17,20 +17,18 @@ export function ChatProvider(props: PropsWithChildren<ChatContextValue>) {
   const { settings } = useAiChatSettings();
 
   const chat = useChat({
+    threadId: conversationId,
     initialMessages: initialMessages.map((m) => ({
       id: m.id,
       role: m.role,
-      content: m.content,
       parts: [{ type: "text", content: m.content }],
     })),
-    connection: fetchServerSentEvents("api/chat", {
-      body: {
-        apiKey: settings?.apiKey,
-        systemPrompt: settings?.systemPrompt,
-        model: settings?.model,
-        conversationId,
-      },
-    }),
+    connection: fetchServerSentEvents("/api/chat"),
+    forwardedProps: {
+      apiKey: settings?.apiKey,
+      systemPrompt: settings?.systemPrompt,
+      model: settings?.model,
+    },
     onError: (error) => {
       console.error("Chat error:", error);
     },
